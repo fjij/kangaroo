@@ -16,7 +16,7 @@ app.post('/', (req, res) => {
     res.send({
       type: 4,
       data: {
-        tts: False,
+        tts: false,
         content: "Congrats on sending your command!",
         embeds: [],
         allowed_mentions: {
