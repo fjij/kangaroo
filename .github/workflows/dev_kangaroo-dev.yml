@@ -24,7 +24,7 @@ jobs:
         node-version: '14.x'
 
     - name: npm install, build, and test
-      working-directory: './app'
+      working-directory: ./app
       run: |
         npm install
 
@@ -34,5 +34,5 @@ jobs:
         app-name: kangaroo-dev
         slot-name: Production
         publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_575222A87DD34B0FB74E6C652BF104DE }}
-        package: .
+        package: ./app
 
