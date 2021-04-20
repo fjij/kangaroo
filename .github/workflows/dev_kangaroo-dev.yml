@@ -24,10 +24,9 @@ jobs:
         node-version: '14.x'
 
     - name: npm install, build, and test
+      working-directory: './app'
       run: |
         npm install
-        npm run build --if-present
-        npm run test --if-present
 
     - name: Run Azure webapp deploy action using publish profile credentials
       uses: azure/webapps-deploy@v2
