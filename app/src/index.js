@@ -12,7 +12,20 @@ if (process.env.USE_SECURITY === 'true') {
 app.post('/', (req, res) => {
   if (req.body.type === 1) {
     res.send({ type: 1 });
+  } else {
+    res.send({
+      type: 4,
+      data: {
+        tts: False,
+        content: "Congrats on sending your command!",
+        embeds: [],
+        allowed_mentions: {
+          parse: []
+        }
+      }
+    });
   }
+
 });
 
 app.listen(process.env.PORT, () => {
