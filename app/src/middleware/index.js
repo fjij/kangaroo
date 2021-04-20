@@ -8,13 +8,13 @@ export const parser = bodyParser.json({
 })
 
 export function security(req, res, next) {
-  const PUBLIC_KEY = process.env.APPLICATION_PUBLIC_KEY;
-
-  const signature = req.get('X-Signature-Ed25519');
-  const timestamp = req.get('X-Signature-Timestamp');
-  const body = req.rawBody.toString(); 
-
   try {
+    const PUBLIC_KEY = process.env.APPLICATION_PUBLIC_KEY;
+
+    const signature = req.get('X-Signature-Ed25519');
+    const timestamp = req.get('X-Signature-Timestamp');
+    const body = req.rawBody.toString(); 
+
     const isVerified = nacl.sign.detached.verify(
       Buffer.from(timestamp + body),
       Buffer.from(signature, 'hex'),
