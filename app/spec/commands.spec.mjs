@@ -1,27 +1,14 @@
 import { help } from '../src/commands/help.js';
 import { executeCommand } from '../src/commands/index.js';
+import { embedResponse } from '../src/responses/index.js';
 
 describe('help', () => {
-  const helpRes = {
-    type: 4,
-    data: {
-      tts: false,
-      content: "",
-      embeds: [
-        {
-          title: 'Kangaroo Help',
-          description: 'Hi there :)'
-        }
-      ],
-      allowed_mentions: {
-        parse: []
-      }
-    }
-  };
-
   it('should respond with help text', () => {
     const res = help({ type: 2 });
-    expect(res).toEqual(helpRes);
+    expect(res).toEqual(embedResponse({
+      title: 'Kangaroo Help',
+      description: 'Hi there :)'
+    }));
   });
 });
 
@@ -34,8 +21,10 @@ describe('execute command', () => {
       }
     };
 
-    const helpRes = help(interaction);
-    const executeRes = help(interaction);
-    expect(executeRes).toEqual(helpRes);
+    const res = executeCommand(interaction);
+    expect(res).toEqual(embedResponse({
+      title: 'Kangaroo Help',
+      description: 'Hi there :)'
+    }));
   });
 });
