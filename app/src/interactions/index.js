@@ -26,6 +26,13 @@ function handleInteraction(interaction) {
 export function registerRoutes(app) {
   app.post('/api/interactions', (req, res) => {
     const interaction = req.body;
-    res.send(handleInteraction(interaction));
+    try {
+      res.send(handleInteraction(interaction));
+    } catch(error) {
+      res.send(embedResponse({
+        title: `Error: ${error.message}`,
+        description: error.stack,
+      }));
+    };
   });
 }
