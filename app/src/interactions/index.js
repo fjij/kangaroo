@@ -6,18 +6,21 @@ const InteractionType = {
   ApplicationCommand: 2,
 };
 
-export function registerRoutes(app) {
-  app.post('/api/interactions', () => {
-    const interaction = req.body;
-
-    switch (interaction.type) {
-      case InteractionType.Ping: {
-        return ping(interaction);
-      }
-
-      case InteractionType.ApplicationCommand: {
-        return applicationCommand(interaction);
-      }
+function handleInteraction(interaction) {
+  switch (interaction.type) {
+    case InteractionType.Ping: {
+      return ping(interaction);
     }
+
+    case InteractionType.ApplicationCommand: {
+      return applicationCommand(interaction);
+    }
+  }
+}
+
+export function registerRoutes(app) {
+  app.post('/api/interactions', (req, res) => {
+    const interaction = req.body;
+    res.send(handleInteraction(interaction));
   });
 }
