@@ -1,6 +1,7 @@
 import { ping } from './ping.js';
 import { executeCommand } from '../commands/index.js';
 import { BadInteractionTypeError } from './errors/BadInteractionTypeError.js';
+import { embedResponse } from '../responses/index.js';
 
 export const InteractionType = {
   Ping: 1,
