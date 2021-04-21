@@ -8,6 +8,7 @@ describe('embedResponse', () => {
     };
     const res = embedResponse(embed);
     expect(res).toEqual({
+      content: "",
       type: 4,
       tts: false,
       embeds: [
