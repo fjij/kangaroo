@@ -1,7 +1,8 @@
 import { ping } from './ping.js';
 import { applicationCommand } from './applicationCommand.js';
+import { BadInteractionTypeError } from './errors/BadInteractionTypeError.js';
 
-const InteractionType = {
+export const InteractionType = {
   Ping: 1,
   ApplicationCommand: 2,
 };
@@ -14,6 +15,10 @@ function handleInteraction(interaction) {
 
     case InteractionType.ApplicationCommand: {
       return applicationCommand(interaction);
+    }
+
+    default: {
+      throw new BadInteractionTypeError(`Unexpected interaction type ${interaction.type}`);
     }
   }
 }
