@@ -27,8 +27,11 @@ function handleInteraction(interaction) {
 export function registerRoutes(app) {
   app.post('/api/interactions', (req, res) => {
     const interaction = req.body;
+    console.log(interaction);
     try {
-      res.send(handleInteraction(interaction));
+      const response = handleInteraction(interaction);
+      res.send(response);
+      console.log(response);
     } catch(error) {
       console.error(error);
       res.send(embedResponse({
