@@ -8,14 +8,11 @@ describe('embedResponse', () => {
     };
     const res = embedResponse(embed);
     expect(res).toEqual({
-      content: "",
       type: 4,
-      tts: false,
-      embeds: [
-        embed
-      ],
-      allowed_mentions: {
-        parse: []
+      data: {
+        embeds: [
+          embed
+        ]
       }
     });
   });
@@ -26,12 +23,9 @@ describe('messageResponse', () => {
     const content = 'hello discord';
     const res = messageResponse(content);
     expect(res).toEqual({
-      content,
       type: 4,
-      tts: false,
-      embeds: [],
-      allowed_mentions: {
-        parse: []
+      data: {
+        content
       }
     });
   });
