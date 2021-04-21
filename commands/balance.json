@@ -1,0 +1,22 @@
+{
+  "name": "balance",
+  "description": "Displays token balances",
+  "options": [
+    {
+      "name": "token",
+      "description": "Token ticker symbol - Example: ETH for Ethereum",
+      "type": 3,
+      "required": false,
+      "choices": [
+        {
+          "name": "ETH",
+          "value": "ETH"
+        },
+        {
+          "name": "DAI",
+          "value": "DAI"
+        }
+      ]
+    }
+  ]
+}
