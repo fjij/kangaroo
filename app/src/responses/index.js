@@ -12,6 +12,7 @@ export function messageResponse(content) {
 
 export function embedResponse(embed) {
   return {
+    content: "",
     type: 4,
     tts: false,
     embeds: [
