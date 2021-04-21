@@ -30,4 +30,3 @@ export function security(req, res, next) {
     return res.status(401).end('invalid request signature');
   };
 };
-
