@@ -1,5 +1,5 @@
 import { ping } from './ping.js';
-import { applicationCommand } from './applicationCommand.js';
+import { executeCommand } from '../commands/index.js';
 import { BadInteractionTypeError } from './errors/BadInteractionTypeError.js';
 
 export const InteractionType = {
@@ -14,7 +14,7 @@ function handleInteraction(interaction) {
     }
 
     case InteractionType.ApplicationCommand: {
-      return applicationCommand(interaction);
+      return executeCommand(interaction);
     }
 
     default: {
