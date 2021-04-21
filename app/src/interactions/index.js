@@ -29,6 +29,7 @@ export function registerRoutes(app) {
     try {
       res.send(handleInteraction(interaction));
     } catch(error) {
+      console.error(error);
       res.send(embedResponse({
         title: `Error: ${error.message}`,
         description: error.stack,
