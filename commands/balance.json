@@ -3,7 +3,7 @@
   "description": "Displays token balances",
   "options": [
     {
-      "name": "token",
+      "name": "ticker",
       "description": "Token ticker symbol - Example: ETH for Ethereum",
       "type": 3,
       "required": false,
@@ -15,6 +15,10 @@
         {
           "name": "DAI",
           "value": "DAI"
+        },
+        {
+          "name": "DNT",
+          "value": "DNT"
         }
       ]
     }

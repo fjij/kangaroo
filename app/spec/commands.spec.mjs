@@ -29,19 +29,11 @@ describe('balance', () => {
       await (new Pouch({ userId, ticker: 'ETH', balance: 0.2 })).save();
       await (new Pouch({ userId, ticker: 'DAI', balance: 30 })).save();
     });
-
+    
     afterAll(async () => {
       await Pouch.deleteMany({});
     });
 
-    it('should respond with all balances if no options are provided', async () => {
-      const interaction = { data: {}, member: { id: '1234' } };
-      const res = await balance(interaction);
-      expect(res).toEqual(embedResponse({
-        title: 'All Balances',
-        description: '0.2 ETH\n30 DAI'
-      }));
-    });
 
     it('should respond with a specific balance if ticker is provided', async () => {
       const interaction = {
@@ -59,6 +51,15 @@ describe('balance', () => {
       expect(res).toEqual(embedResponse({
         title: 'ETH Balance',
         description: '0.2 ETH'
+      }));
+    });
+
+    it('should respond with all balances if no options are provided', async () => {
+      const interaction = { data: {}, member: { id: '1234' } };
+      const res = await balance(interaction);
+      expect(res).toEqual(embedResponse({
+        title: 'All Balances',
+        description: '0.2 ETH\n30 DAI\n0 DNT'
       }));
     });
   });
