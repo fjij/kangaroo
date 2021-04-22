@@ -10,10 +10,14 @@ export async function balance(interaction) {
   const title = ticker?`${ticker} Balance`:'All Balances';
   const tickers = ticker?[ticker]:(await getTickers());
 
-  const description = (await Promise.all(tickers.map(async t => {
-    const value = await getBalance(userId, t);
-    return `${value} ${t}`;
-  }))).join('\n');
+  const balances = (await Promise.all(tickers.map(async ticker => {
+    const value = await getBalance(userId, ticker);
+    return { ticker, value };
+  }))).filter(({ value }) => value > 0);
+
+  const description = (balances.length > 0)?
+    balances.map(({ticker, value}) => `${value} ${ticker}`).join('\n'):
+    (ticker?`0 ${ticker}`:'You don\'t have any tokens :(');
 
   return embedResponse({
     title,
