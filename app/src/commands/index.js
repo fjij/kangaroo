@@ -2,7 +2,19 @@ import { UnknownCommandError } from './errors/UnknownCommandError.js';
 import { help } from './help.js';
 import { balance } from './balance.js';
 
-export function executeCommand(interaction) {
+export function getOption(interaction, name) {
+  const options = interaction.data.options;
+  if (!options) {
+    return undefined;
+  }
+  const option = options.filter(option => option.name === name)[0];
+  if (!option) {
+    return undefined;
+  }
+  return option.value;
+}
+
+export async function executeCommand(interaction) {
   const data = interaction.data;
   switch (data.name) {
     case 'help': {
@@ -10,7 +22,7 @@ export function executeCommand(interaction) {
     }
 
     case 'balance': {
-      return balance(interaction);
+      return await balance(interaction);
     }
 
     default: {

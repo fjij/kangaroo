@@ -8,14 +8,14 @@ export const InteractionType = {
   ApplicationCommand: 2,
 };
 
-function handleInteraction(interaction) {
+async function handleInteraction(interaction) {
   switch (interaction.type) {
     case InteractionType.Ping: {
       return ping(interaction);
     }
 
     case InteractionType.ApplicationCommand: {
-      return executeCommand(interaction);
+      return await executeCommand(interaction);
     }
 
     default: {
@@ -24,14 +24,16 @@ function handleInteraction(interaction) {
   }
 }
 
+export function getUserId(interaction) {
+  return interaction?.member?.id;
+}
+
 export function registerRoutes(app) {
-  app.post('/api/interactions', (req, res) => {
+  app.post('/api/interactions', async (req, res) => {
     const interaction = req.body;
-    console.log(interaction);
     try {
-      const response = handleInteraction(interaction);
+      const response = await handleInteraction(interaction);
       res.send(response);
-      console.log(response);
     } catch(error) {
       console.error(error);
       res.send(embedResponse({

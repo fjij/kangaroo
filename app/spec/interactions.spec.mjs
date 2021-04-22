@@ -1,4 +1,5 @@
 import { ping } from '../src/interactions/ping.js';
+import { getUserId } from '../src/interactions/index.js';
 import { BadInteractionTypeError } from '../src/interactions/errors/BadInteractionTypeError.js';
 
 describe('ping', () => {
@@ -9,5 +10,17 @@ describe('ping', () => {
   it('should fail on wrong type', () => {
     expect(() => ping({ type: 2 }))
       .toThrow(new BadInteractionTypeError('Expected 1 but got 2'));
+  });
+});
+
+describe('getUserId', () => {
+  it('should return a userId', () => {
+    const userId = getUserId({ member: { id: '1234' } });
+    expect(userId).toEqual('1234');
+  });
+
+  it('should return undefined for no userId', () => {
+    const userId = getUserId({});
+    expect(userId).toBeUndefined();
   });
 });
