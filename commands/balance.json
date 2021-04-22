@@ -15,6 +15,10 @@
         {
           "name": "DAI",
           "value": "DAI"
+        },
+        {
+          "name": "DNT",
+          "value": "DNT"
         }
       ]
     }

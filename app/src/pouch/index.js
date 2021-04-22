@@ -19,5 +19,5 @@ export async function getBalance(userId, ticker) {
 }
 
 export async function getTickers() {
-  return [ 'ETH', 'DAI' ];
+  return [ 'ETH', 'DAI', 'DNT' ];
 }
