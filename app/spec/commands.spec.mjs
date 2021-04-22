@@ -35,7 +35,7 @@ describe('balance', () => {
     const res = await balance(interaction);
     expect(res).toEqual(embedResponse({
       title: 'All Balances',
-      description: '0.2 ETH\n30 DAI'
+      description: '0.2 ETH\n30 DAI\n0 DNT'
     }));
   });
 
