@@ -1,7 +1,4 @@
-# Docs for the Azure Web Apps Deploy action: https://go.microsoft.com/fwlink/?linkid=2134798
-# More GitHub Actions for Azure: https://go.microsoft.com/fwlink/?linkid=2135048
-
-name: Azure App Service - kangaroo-dev(Production), Build and deploy NodeJS app
+name: Dev Deploy
 
 on:
   push:
@@ -13,12 +10,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # checkout the repo
-    - name: 'Checkout Github Action'
+    - name: Checkout repo
       uses: actions/checkout@master
 
 
-    - name: Set up Node.js version
+    - name: Set up Node.js
       uses: actions/setup-node@v1
       with:
         node-version: '14.x'
@@ -28,7 +24,7 @@ jobs:
       with:
         mongodb-version: '4.4'
 
-    - name: npm install, build, and test
+    - name: npm install, test
       working-directory: ./app
       env:
         MONGO_URI: mongodb://localhost/kangaroo?retryWrites=true&w=majority
@@ -36,7 +32,7 @@ jobs:
         npm install
         npm run test
 
-    - name: Run Azure webapp deploy action using publish profile credentials
+    - name: Deploy to Azure
       uses: azure/webapps-deploy@v2
       with:
         app-name: kangaroo-dev
