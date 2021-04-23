@@ -5,6 +5,8 @@ const tokenSchema = new Schema({
   ticker: {type: String, required: true}
 });
 
+tokenSchema.index({ ticker: 1 }, { unique: true });
+
 export const Token = mongoose.model('token', tokenSchema);
 
 export async function getAllTokens() {

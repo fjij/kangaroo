@@ -1,6 +1,26 @@
 import { Token, getAllTokens, getTokenByTicker } from '../src/tokens/index.js';
 import { connect } from '../src/db/index.js';
 
+describe('Tokens', () => {
+  beforeAll(async () => {
+    await connect();
+  });
+
+  afterAll(async () => {
+    await Token.deleteMany({});
+  });
+
+  it('should enforce a unique ticker', async () => {
+    await (new Token({ ticker: 'ETH' })).save();
+    (new Token({ ticker: 'ETH' })).save().then(() => {
+      throw new Error('Should reject!');
+    }).catch(e => {
+      expect(e.name).toEqual('MongoError');
+      expect(e.code).toEqual(11000);
+    });
+  });
+});
+
 describe('getAllTokens', () => {
   beforeAll(async () => {
     await connect();

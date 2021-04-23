@@ -7,6 +7,8 @@ const pouchSchema = new Schema({
   balance: {type: Number, required: true}
 });
 
+pouchSchema.index({ userId: 1, tokenId: 1 }, { unique: true });
+
 export const Pouch = mongoose.model('pouch', pouchSchema);
 
 export async function getBalance(userId, token) {

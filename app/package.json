@@ -6,7 +6,17 @@
   "type": "module",
   "scripts": {
     "start": "node src/index.js",
-    "test": "jasmine"
+    "test": "jasmine",
+
+    "create-token": "node scripts/createToken.js",
+    "list-tokens": "node scripts/listTokens.js",
+    "delete-token": "node scripts/deleteToken.js",
+    "clear-tokens": "node scripts/clearTokens.js",
+
+    "create-pouch": "node scripts/createPouch.js",
+    "list-pouches": "node scripts/listPouches.js",
+    "delete-pouch": "node scripts/deletePouch.js",
+    "clear-pouches": "node scripts/clearPouches.js"
   },
   "author": "",
   "license": "ISC",
