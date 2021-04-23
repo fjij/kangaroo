@@ -1,20 +1,21 @@
 import { ping } from './ping.js';
 import { executeCommand } from '../commands/index.js';
 import { BadInteractionTypeError } from './errors/BadInteractionTypeError.js';
+import { embedResponse } from '../responses/index.js';
 
 export const InteractionType = {
   Ping: 1,
   ApplicationCommand: 2,
 };
 
-function handleInteraction(interaction) {
+async function handleInteraction(interaction) {
   switch (interaction.type) {
     case InteractionType.Ping: {
       return ping(interaction);
     }
 
     case InteractionType.ApplicationCommand: {
-      return executeCommand(interaction);
+      return await executeCommand(interaction);
     }
 
     default: {
@@ -23,9 +24,22 @@ function handleInteraction(interaction) {
   }
 }
 
+export function getUserId(interaction) {
+  return interaction?.member?.id;
+}
+
 export function registerRoutes(app) {
-  app.post('/api/interactions', (req, res) => {
+  app.post('/api/interactions', async (req, res) => {
     const interaction = req.body;
-    res.send(handleInteraction(interaction));
+    try {
+      const response = await handleInteraction(interaction);
+      res.send(response);
+    } catch(error) {
+      console.error(error);
+      res.send(embedResponse({
+        title: `Error: ${error.message}`,
+        description: error.stack,
+      }));
+    };
   });
 }

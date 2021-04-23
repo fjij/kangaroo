@@ -1,0 +1,42 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@master
+
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: '14.x'
+
+    - name: Start MongoDB
+      uses: supercharge/mongodb-github-action@1.3.0
+      with:
+        mongodb-version: '4.4'
+
+    - name: npm install, test
+      working-directory: ./app
+      env:
+        MONGO_URI: mongodb://localhost/kangaroo?retryWrites=true&w=majority
+      run: |
+        npm install
+        npm run test
+
+    - name: Deploy to Azure
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: kangaroo-dev
+        slot-name: Production
+        publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_575222A87DD34B0FB74E6C652BF104DE }}
+        package: ./app
+
