@@ -24,5 +24,9 @@ export async function handleInteraction(interaction) {
 }
 
 export function getUserId(interaction) {
-  return interaction?.member?.id;
+  if (interaction?.user) {
+    return interaction?.user?.id;
+  } else {
+    return interaction?.member?.user?.id;
+  }
 }

@@ -14,8 +14,13 @@ describe('ping', () => {
 });
 
 describe('getUserId', () => {
-  it('should return a userId', () => {
-    const userId = getUserId({ member: { id: '1234' } });
+  it('should return a userId in a guild', () => {
+    const userId = getUserId({ member: { user: { id: '1234' } } });
+    expect(userId).toEqual('1234');
+  });
+
+  it('should return a userId in dms', () => {
+    const userId = getUserId({ user: { id: '1234' } });
     expect(userId).toEqual('1234');
   });
 

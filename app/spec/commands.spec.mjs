@@ -39,7 +39,7 @@ describe('balance', () => {
     it('should respond with a specific balance if ticker is provided', async () => {
       const interaction = {
         data: { options: [ { name: 'ticker', value: 'ETH' } ] },
-        member: { id: '1234' }
+        user: { id: '1234' }
       };
       const res = await balance(interaction);
       expect(res).toEqual(embedResponse({
@@ -51,7 +51,7 @@ describe('balance', () => {
     it('should respond with a specific balance if ticker is provided case-insensitive', async () => {
       const interaction = {
         data: { options: [ { name: 'ticker', value: 'dai' } ] },
-        member: { id: '1234' }
+        user: { id: '1234' }
       };
       const res = await balance(interaction);
       expect(res).toEqual(embedResponse({
@@ -61,7 +61,7 @@ describe('balance', () => {
     });
 
     it('should respond with all balances if no options are provided', async () => {
-      const interaction = { data: {}, member: { id: '1234' } };
+      const interaction = { data: {}, user: { id: '1234' } };
       const res = await balance(interaction);
       expect(res).toEqual(embedResponse({
         title: 'All Balances',
@@ -72,7 +72,7 @@ describe('balance', () => {
     it('should respond with an error message if an invalid ticker is provided', async () => {
       const interaction = {
         data: { options: [ { name: 'ticker', value: 'DOGE' } ] },
-        member: { id: '1234' }
+        user: { id: '1234' }
       };
       const res = await balance(interaction);
       expect(res).toEqual(embedResponse({
@@ -94,7 +94,7 @@ describe('balance', () => {
       await Token.deleteMany({});
     });
     it('should show a no balance message if no options are provided', async () => {
-      const interaction = { data: {}, member: { id: '1234' } };
+      const interaction = { data: {}, user: { id: '1234' } };
       const res = await balance(interaction);
       expect(res).toEqual(embedResponse({
         title: 'All Balances',
@@ -112,7 +112,7 @@ describe('balance', () => {
             }
           ]
         },
-        member: { id: '1234' }
+        user: { id: '1234' }
       };
       const res = await balance(interaction);
       expect(res).toEqual(embedResponse({

@@ -8,10 +8,6 @@ export async function balance(interaction) {
   const userId = getUserId(interaction);
   const ticker = getOption(interaction, 'ticker')?.toUpperCase();
 
-  console.log('/balance');
-  console.log(`userId: ${userId}`);
-  console.log(`ticker: ${ticker}`);
-
   if (ticker) {
     const title = `${ticker} Balance`;
     const token = await getTokenByTicker(ticker);
