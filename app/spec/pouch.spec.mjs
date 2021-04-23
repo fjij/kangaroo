@@ -15,12 +15,13 @@ describe('Pouches', () => {
     await (new Pouch({ userId: '2', tokenId: '1', balance: 0 })).save();
     await (new Pouch({ userId: '2', tokenId: '2', balance: 0 })).save();
     await (new Pouch({ userId: '1', tokenId: '2', balance: 0 })).save();
-    (new Pouch({ userId: '1', tokenId: '1', balance: 0 })).save().then(() => {
+    try {
+      await (new Pouch({ userId: '1', tokenId: '1', balance: 0  })).save();
       throw new Error('Should reject!');
-    }).catch(e => {
+    } catch(e) {
       expect(e.name).toEqual('MongoError');
       expect(e.code).toEqual(11000);
-    });
+    }
   });
 });
 

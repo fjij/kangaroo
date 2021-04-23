@@ -12,12 +12,13 @@ describe('Tokens', () => {
 
   it('should enforce a unique ticker', async () => {
     await (new Token({ ticker: 'ETH' })).save();
-    (new Token({ ticker: 'ETH' })).save().then(() => {
+    try {
+      await (new Token({ ticker: 'ETH' })).save();
       throw new Error('Should reject!');
-    }).catch(e => {
+    } catch(e) {
       expect(e.name).toEqual('MongoError');
       expect(e.code).toEqual(11000);
-    });
+    }
   });
 });
 
