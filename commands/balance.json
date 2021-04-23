@@ -6,21 +6,7 @@
       "name": "ticker",
       "description": "Token ticker symbol - Example: ETH for Ethereum",
       "type": 3,
-      "required": false,
-      "choices": [
-        {
-          "name": "ETH",
-          "value": "ETH"
-        },
-        {
-          "name": "DAI",
-          "value": "DAI"
-        },
-        {
-          "name": "DNT",
-          "value": "DNT"
-        }
-      ]
+      "required": false
     }
   ]
 }

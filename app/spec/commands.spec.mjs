@@ -2,8 +2,9 @@ import { help } from '../src/commands/help.js';
 import { balance } from '../src/commands/balance.js';
 import { executeCommand, getOption } from '../src/commands/index.js';
 import { embedResponse } from '../src/responses/index.js';
-import mongoose from 'mongoose';
+import { connect } from '../src/db/index.js';
 import { Pouch } from '../src/pouch/index.js';
+import { Token } from '../src/tokens/index.js';
 
 describe('help', () => {
   it('should respond with help text', () => {
@@ -17,40 +18,45 @@ describe('help', () => {
 
 describe('balance', () => {
   beforeAll(async () => {
-    await mongoose.connect(process.env.MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    await connect();
   });
 
   describe('with balance', () => {
     beforeAll(async () => {
+      const tokenETH = await (new Token({ ticker: 'ETH' })).save();
+      const tokenDAI = await (new Token({ ticker: 'DAI' })).save();
+      await (new Token({ ticker: 'DNT' })).save();
       const userId = '1234';
-      await (new Pouch({ userId, ticker: 'ETH', balance: 0.2 })).save();
-      await (new Pouch({ userId, ticker: 'DAI', balance: 30 })).save();
+      await (new Pouch({ userId, tokenId: tokenETH.id, balance: 0.2 })).save();
+      await (new Pouch({ userId, tokenId: tokenDAI.id, balance: 30 })).save();
     });
     
     afterAll(async () => {
       await Pouch.deleteMany({});
+      await Token.deleteMany({});
     });
-
 
     it('should respond with a specific balance if ticker is provided', async () => {
       const interaction = {
-        data: {
-          options: [
-            {
-              name: 'ticker',
-              value: 'ETH'
-            }
-          ]
-        },
+        data: { options: [ { name: 'ticker', value: 'ETH' } ] },
         member: { id: '1234' }
       };
       const res = await balance(interaction);
       expect(res).toEqual(embedResponse({
         title: 'ETH Balance',
         description: '0.2 ETH'
+      }));
+    });
+
+    it('should respond with a specific balance if ticker is provided case-insensitive', async () => {
+      const interaction = {
+        data: { options: [ { name: 'ticker', value: 'dai' } ] },
+        member: { id: '1234' }
+      };
+      const res = await balance(interaction);
+      expect(res).toEqual(embedResponse({
+        title: 'DAI Balance',
+        description: '30 DAI'
       }));
     });
 
@@ -62,9 +68,31 @@ describe('balance', () => {
         description: '0.2 ETH\n30 DAI'
       }));
     });
+
+    it('should respond with an error message if an invalid ticker is provided', async () => {
+      const interaction = {
+        data: { options: [ { name: 'ticker', value: 'DOGE' } ] },
+        member: { id: '1234' }
+      };
+      const res = await balance(interaction);
+      expect(res).toEqual(embedResponse({
+        title: 'Error',
+        description: 'That token doesn\'t exist :('
+      }));
+    });
   });
 
   describe('with no balance', () => {
+    beforeAll(async () => {
+      await (new Token({ ticker: 'ETH' })).save();
+      await (new Token({ ticker: 'DAI' })).save();
+      await (new Token({ ticker: 'DNT' })).save();
+    });
+
+    afterAll(async () => {
+      await Pouch.deleteMany({});
+      await Token.deleteMany({});
+    });
     it('should show a no balance message if no options are provided', async () => {
       const interaction = { data: {}, member: { id: '1234' } };
       const res = await balance(interaction);
