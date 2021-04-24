@@ -10,8 +10,30 @@ describe('help', () => {
   it('should respond with help text', () => {
     const res = help({ type: 2 });
     expect(res).toEqual(embedResponse({
-      title: 'Kangaroo Help',
-      description: 'Hi there :)'
+      title: 'Introduction to Kangaroo 🦘',
+      "color": 15422875,
+      fields: [
+      {
+        name: "What is It? ⁉️",
+        value: "Kangaroo is a crypto tipping bot built with Layer 2 onboarding in mind. It supports Ethereum and a range of ERC-20 tokens."
+      },
+      {
+        name: "Frictionless withdrawals 💸",
+        value: "Typical Ethereum token transactions can have fees upwards of $20. Harness the power of Layer 2 and withdraw your funds for nearly 100 times less."
+      },
+      {
+        name: "Grow your community 👥",
+        value: "Engage your discord server with a plethora community oriented features. Better yet, give crypto funds that your community members can actually use."
+      },
+      {
+        name: "The Basics 📘",
+        value: "Tip other users, deposit and withdraw ETH and ERC-20 tokens from your Layer 2 wallet. "
+      },
+      {
+        name: "Layer 2 Native 👏",
+        value: "Tip other users, deposit and withdraw ETH and ERC-20 tokens from your Layer 2 wallet. \n "
+      }
+    ]
     }));
   });
 });
@@ -44,6 +66,7 @@ describe('balance', () => {
       const res = await balance(interaction);
       expect(res).toEqual(embedResponse({
         title: 'ETH Balance',
+        color: 13370886,
         description: '0.2 ETH'
       }));
     });
@@ -56,6 +79,7 @@ describe('balance', () => {
       const res = await balance(interaction);
       expect(res).toEqual(embedResponse({
         title: 'DAI Balance',
+        color: 13370886,
         description: '30 DAI'
       }));
     });
@@ -65,6 +89,7 @@ describe('balance', () => {
       const res = await balance(interaction);
       expect(res).toEqual(embedResponse({
         title: 'All Balances',
+        color: 13370886,
         description: '0.2 ETH\n30 DAI'
       }));
     });
@@ -77,6 +102,7 @@ describe('balance', () => {
       const res = await balance(interaction);
       expect(res).toEqual(embedResponse({
         title: 'Error',
+        color: 13370886,
         description: 'That token doesn\'t exist :('
       }));
     });
@@ -98,6 +124,7 @@ describe('balance', () => {
       const res = await balance(interaction);
       expect(res).toEqual(embedResponse({
         title: 'All Balances',
+        color: 13370886,
         description: 'You don\'t have any tokens :('
       }));
     });
@@ -117,6 +144,7 @@ describe('balance', () => {
       const res = await balance(interaction);
       expect(res).toEqual(embedResponse({
         title: 'DAI Balance',
+        color: 13370886,
         description: '0 DAI'
       }));
     });
@@ -133,8 +161,30 @@ describe('execute command', () => {
     };
     const res = await executeCommand(interaction);
     expect(res).toEqual(embedResponse({
-      title: 'Kangaroo Help',
-      description: 'Hi there :)'
+      title: 'Introduction to Kangaroo 🦘',
+      "color": 15422875,
+      fields: [
+        {
+          name: "What is It? ⁉️",
+          value: "Kangaroo is a crypto tipping bot built with Layer 2 onboarding in mind. It supports Ethereum and a range of ERC-20 tokens."
+        },
+        {
+          name: "Frictionless withdrawals 💸",
+          value: "Typical Ethereum token transactions can have fees upwards of $20. Harness the power of Layer 2 and withdraw your funds for nearly 100 times less."
+        },
+        {
+          name: "Grow your community 👥",
+          value: "Engage your discord server with a plethora community oriented features. Better yet, give crypto funds that your community members can actually use."
+        },
+        {
+          name: "The Basics 📘",
+          value: "Tip other users, deposit and withdraw ETH and ERC-20 tokens from your Layer 2 wallet. "
+        },
+        {
+          name: "Layer 2 Native 👏",
+          value: "Tip other users, deposit and withdraw ETH and ERC-20 tokens from your Layer 2 wallet. \n "
+        }
+      ]
     }));
   });
 });

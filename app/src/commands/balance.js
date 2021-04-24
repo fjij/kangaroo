@@ -15,6 +15,7 @@ export async function balance(interaction) {
     if (!token) {
       return embedResponse({
         title: 'Error',
+        color: 13370886,
         description: 'That token doesn\'t exist :('
       });
     }
@@ -23,6 +24,7 @@ export async function balance(interaction) {
 
     return embedResponse({
       title,
+      color: 13370886,
       description
     });
   } else {
@@ -39,6 +41,7 @@ export async function balance(interaction) {
 
     return embedResponse({
       title,
+      color: 13370886,
       description
     });
   }
