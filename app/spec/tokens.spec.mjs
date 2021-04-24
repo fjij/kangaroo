@@ -12,6 +12,7 @@ describe('Tokens', () => {
 
   it('should enforce a unique ticker', async () => {
     await (new Token({ ticker: 'ETH' })).save();
+    await new Promise(resolve => setTimeout(resolve, 100));
     try {
       await (new Token({ ticker: 'ETH' })).save();
       throw new Error('Should reject!');

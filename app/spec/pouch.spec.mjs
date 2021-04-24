@@ -15,6 +15,7 @@ describe('Pouches', () => {
     await (new Pouch({ userId: '2', tokenId: '1', balance: 0 })).save();
     await (new Pouch({ userId: '2', tokenId: '2', balance: 0 })).save();
     await (new Pouch({ userId: '1', tokenId: '2', balance: 0 })).save();
+    await new Promise(resolve => setTimeout(resolve, 100));
     try {
       await (new Pouch({ userId: '1', tokenId: '1', balance: 0  })).save();
       throw new Error('Should reject!');
