@@ -5,11 +5,11 @@ Bringing the next generation of crypto to the masses.
 Kangaroo is a crypto tipping bot built with Layer 2 onboarding in mind. It
 supports Ethereum and a range of ERC-20 tokens.
 
-## Frictionless withdrawals
+### Frictionless withdrawals
 Typical Ethereum token transactions can have fees upwards of $20. Harness the
 power of Layer 2 and withdraw your funds for nearly 100 times less.
 
-## Grow your community
+### Grow your community
 Engage your discord server with a plethora community oriented features. Better
 yet, give crypto funds that your community members can actually use.
 
