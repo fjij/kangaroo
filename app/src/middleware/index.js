@@ -1,5 +1,6 @@
 import nacl from 'tweetnacl';
 import bodyParser from 'body-parser';
+import config from '../config/index.js';
 
 export const parser = bodyParser.json({
   verify: (req, _res, buf) => {
@@ -9,7 +10,7 @@ export const parser = bodyParser.json({
 
 export function security(req, res, next) {
   try {
-    const PUBLIC_KEY = process.env.APPLICATION_PUBLIC_KEY;
+    const PUBLIC_KEY = config.appPublicKey;
 
     const signature = req.get('X-Signature-Ed25519');
     const timestamp = req.get('X-Signature-Timestamp');
