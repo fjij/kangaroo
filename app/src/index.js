@@ -7,10 +7,10 @@ import config from './config/index.js';
 const app = express();
 
 function registerApiRoute(app) {
-  if (config.use_security === 'true') {
-    app.use(config.interact_endpoint, security);
+  if (config.useSecurity === 'true') {
+    app.use(config.interactEndpoint, security);
   }
-  app.post(config.interact_endpoint, async (req, res) => {
+  app.post(config.interactEndpoint, async (req, res) => {
     const interaction = req.body;
     try {
       const response = await handleInteraction(interaction);

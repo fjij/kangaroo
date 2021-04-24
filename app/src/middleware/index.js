@@ -10,7 +10,7 @@ export const parser = bodyParser.json({
 
 export function security(req, res, next) {
   try {
-    const PUBLIC_KEY = config.app_public_key;
+    const PUBLIC_KEY = config.appPublicKey;
 
     const signature = req.get('X-Signature-Ed25519');
     const timestamp = req.get('X-Signature-Timestamp');
