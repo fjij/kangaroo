@@ -2,14 +2,15 @@ import express from 'express';
 import { connect } from './db/index.js';
 import { parser, security } from './middleware/index.js';
 import { handleInteraction } from './interactions/index.js';
+import config from './config/index.js';
 
 const app = express();
 
 function registerApiRoute(app) {
-  if (process.env.USE_SECURITY === 'true') {
-    app.use(process.env.INTERACTIONS_ENDPOINT, security);
+  if (config.use_security === 'true') {
+    app.use(config.interact_endpoint, security);
   }
-  app.post(process.env.INTERACTIONS_ENDPOINT, async (req, res) => {
+  app.post(config.interact_endpoint, async (req, res) => {
     const interaction = req.body;
     try {
       const response = await handleInteraction(interaction);
@@ -27,8 +28,8 @@ async function start() {
   app.use(parser);
   registerApiRoute(app);
   await connect();
-  app.listen(process.env.PORT, () => {
-    console.log(`App listening at http://localhost:${process.env.PORT}`);
+  app.listen(config.port, () => {
+    console.log(`App listening at http://localhost:${config.port}`);
   });
 }
 
