@@ -32,6 +32,16 @@ jobs:
         npm install
         npm run test
 
+    - name: Update commands on Discord
+      working-directory: ./commands
+      env:
+        APP_ID: ${{ secrets.DISCORD_APP_ID }}
+        GUILD_ID: ${{ secrets.DISCORD_GUILD_ID }}
+        AUTHORIZATION: ${{ secrets.DISCORD_AUTHORIZATION }}
+      run: |
+        npm install
+        npm run update-commands
+
     - name: Deploy to Azure
       uses: azure/webapps-deploy@v2
       with:
