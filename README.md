@@ -30,3 +30,41 @@ Reward members of your community and boost engagement.
 
 #### Smart Contracts 📝
 Interact with your favorite Dapps from the safety of your own server.
+
+# Developing
+
+## Prerequisites
+
+- MongoDB running locally. Follow [this guide](https://docs.mongodb.com/guides/server/install/) to install AND run it.
+- Node.js and npm
+
+## Setup
+
+1. Clone the repository
+
+```bash
+$ git clone https://github.com/fjij/kangaroo.git 
+```
+
+2. Install required packages
+```bash
+$ cd app
+$ npm install
+```
+
+## Testing
+
+```bash
+$ cd app
+$ npm run test
+```
+
+Tests are stored in the `app/spec` directory.
+
+## Pull requests
+
+Don't push directly to the main branch. We have pull requests. Use em!
+
+## Deployment
+
+Kangaroo bot is deployed on push to the main branch.
