@@ -5,6 +5,7 @@ import { embedResponse } from '../src/responses/index.js';
 import { connect } from '../src/db/index.js';
 import { Pouch } from '../src/pouch/index.js';
 import { Token } from '../src/tokens/index.js';
+import * as eth2 from '../src/eth2/index.js';
 
 describe('help', () => {
   it('should respond with help text', () => {
@@ -41,6 +42,7 @@ describe('help', () => {
 describe('balance', () => {
   beforeAll(async () => {
     await connect();
+    await eth2.init();
   });
 
   describe('with balance', () => {
@@ -49,8 +51,16 @@ describe('balance', () => {
       const tokenDAI = await (new Token({ ticker: 'DAI' })).save();
       await (new Token({ ticker: 'DNT' })).save();
       const userId = '1234';
-      await (new Pouch({ userId, tokenId: tokenETH.id, balance: 0.2 })).save();
-      await (new Pouch({ userId, tokenId: tokenDAI.id, balance: 30 })).save();
+      await (new Pouch({
+        userId,
+        tokenId: tokenETH.id,
+        balance: eth2.Amount.fromStringValue({ ticker: 'ETH' }, '0.2').getValue().toString()
+      })).save();
+      await (new Pouch({
+        userId,
+        tokenId: tokenDAI.id,
+        balance: eth2.Amount.fromStringValue({ ticker: 'DAI' }, '30').getValue().toString()
+      })).save();
     });
     
     afterAll(async () => {
@@ -80,7 +90,7 @@ describe('balance', () => {
       expect(res).toEqual(embedResponse({
         title: 'DAI Balance',
         color: 13370886,
-        description: '30 DAI'
+        description: '30.0 DAI'
       }));
     });
 
@@ -90,7 +100,7 @@ describe('balance', () => {
       expect(res).toEqual(embedResponse({
         title: 'All Balances',
         color: 13370886,
-        description: '0.2 ETH\n30 DAI'
+        description: '0.2 ETH\n30.0 DAI'
       }));
     });
 
@@ -145,7 +155,7 @@ describe('balance', () => {
       expect(res).toEqual(embedResponse({
         title: 'DAI Balance',
         color: 13370886,
-        description: '0 DAI'
+        description: '0.0 DAI'
       }));
     });
   });

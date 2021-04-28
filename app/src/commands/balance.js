@@ -20,7 +20,7 @@ export async function balance(interaction) {
       });
     }
 
-    const description = `${await getBalance(userId, token)} ${ticker}`;
+    const description = (await getBalance(userId, token)).toString();
 
     return embedResponse({
       title,
@@ -31,12 +31,12 @@ export async function balance(interaction) {
     const title = 'All Balances';
     const tokens = await getAllTokens();
 
-    const tokensWithBalances = (await Promise.all(tokens.map(async token => {
-      return { ticker: token.ticker, balance: await getBalance(userId, token) };
-    }))).filter(({ balance }) => balance > 0);
+    const amounts = (await Promise.all(
+      tokens.map(async token => await getBalance(userId, token))
+    )).filter(amount => amount.getValue().gt(0));
 
-    const description = (tokensWithBalances.length > 0)?
-      tokensWithBalances.map(({ticker, balance}) => `${balance} ${ticker}`).join('\n'):
+    const description = (amounts.length > 0)?
+      amounts.map(amount => amount.toString()).join('\n'):
       'You don\'t have any tokens :(';
 
     return embedResponse({

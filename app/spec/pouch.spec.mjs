@@ -1,5 +1,6 @@
 import { Pouch, getBalance } from '../src/pouch/index.js';
 import { connect } from '../src/db/index.js';
+import * as eth2 from '../src/eth2/index.js';
 
 describe('Pouches', () => {
   beforeAll(async () => {
@@ -29,7 +30,8 @@ describe('Pouches', () => {
 describe('getBalance', () => {
   beforeAll(async () => {
     await connect();
-    await (new Pouch({ userId: '1', tokenId: '5', balance: 20.3 })).save();
+    await eth2.init();
+    await (new Pouch({ userId: '1', tokenId: '5', balance: '20' })).save();
   });
 
   afterAll(async () => {
@@ -39,12 +41,12 @@ describe('getBalance', () => {
   it('should get a balance for a token', async () => {
     const token = { id: '5' };
     const balance = await getBalance('1', token);
-    expect(balance).toEqual(20.3);
+    expect(balance.getValue().toString()).toEqual('20');
   });
 
   it('should get a balance of zero a pouch that doesn\'t exist', async () => {
     const token = { id: '3' };
     const balance = await getBalance('1', token);
-    expect(balance).toEqual(0);
+    expect(balance.getValue().toString()).toEqual('0');
   });
 });
