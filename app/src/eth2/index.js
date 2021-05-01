@@ -66,24 +66,13 @@ export class Wallet {
       throw new Error('Could not create wallet. Missing syncProvider');
     }
 
-    let ethersWallet, syncWallet;
+    const ethersWallet = privateKey?
+      new ethers.Wallet(privateKey).connect(ethersProvider):
+      ethers.Wallet.createRandom().connect(ethersProvider);
 
-    if (privateKey) {
-      ethersWallet = new ethers.Wallet(privateKey).connect(ethersProvider);
-    } else {
-      ethersWallet = ethers.Wallet.createRandom().connect(ethersProvider);
-    }
-
-    syncWallet = await zksync.Wallet.fromEthSigner(ethersWallet, syncProvider);
+    const syncWallet = await zksync.Wallet.fromEthSigner(ethersWallet, syncProvider);
 
     return new Wallet(ethersWallet, syncWallet);
-  }
-
-  static async getState(address) {
-    if (!syncProvider) {
-      throw new Error('Could not create wallet. Missing syncProvider');
-    }
-    return await syncProvider.getState(address);
   }
 
   constructor(ethersWallet, syncWallet) {
