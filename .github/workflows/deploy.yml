@@ -28,7 +28,7 @@ jobs:
       working-directory: ./app
       env:
         MONGO_URI: mongodb://localhost/kangaroo?retryWrites=true&w=majority
-        PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+        TEST_PRIVATE_KEY: ${{ secrets.TEST_PRIVATE_KEY }}
       run: |
         npm install
         npm run test

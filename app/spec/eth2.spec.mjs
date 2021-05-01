@@ -2,9 +2,11 @@ import * as eth2 from '../src/eth2/index.js';
 import { Amount } from '../src/eth2/amount.js';
 import { Wallet } from '../src/eth2/wallet.js';
 
-const PRIVATE_KEY = process.env.PRIVATE_KEY;
+const PRIVATE_KEY = process.env.TEST_PRIVATE_KEY;
 if (!PRIVATE_KEY) {
-  throw new Error('You must provide an account in the PRIVATE_KEY environment variable');
+  throw new Error(
+    'You must provide an account in the TEST_PRIVATE_KEY environment variable'
+  );
 }
 
 describe('Wallet', () => {
