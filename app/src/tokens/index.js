@@ -2,7 +2,8 @@ import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
 const tokenSchema = new Schema({
-  ticker: {type: String, required: true}
+  ticker: {type: String, required: true},
+  name: {type: String, required: true}
 });
 
 tokenSchema.index({ ticker: 1 }, { unique: true });

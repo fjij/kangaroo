@@ -1,6 +1,7 @@
 import { UnknownCommandError } from './errors/UnknownCommandError.js';
 import { help } from './help.js';
 import { balance } from './balance.js';
+import { listTokens } from './listTokens.js';
 
 export function getOption(interaction, name) {
   const options = interaction.data.options;
@@ -23,6 +24,10 @@ export async function executeCommand(interaction) {
 
     case 'balance': {
       return await balance(interaction);
+    }
+
+    case 'listtokens': {
+      return await listTokens(interaction);
     }
 
     default: {

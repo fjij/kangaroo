@@ -2,18 +2,19 @@ import * as eth2 from '../src/eth2/index.js';
 import { Amount } from '../src/eth2/amount.js';
 import { Wallet } from '../src/eth2/wallet.js';
 
-const PRIVATE_KEY = process.env.TEST_PRIVATE_KEY;
-if (!PRIVATE_KEY) {
-  throw new Error(
-    'You must provide an account in the TEST_PRIVATE_KEY environment variable'
-  );
-}
-
 describe('Wallet', () => {
 
   jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000 * 60;
+  const PRIVATE_KEY = process.env.TEST_PRIVATE_KEY;
+  
 
   beforeAll(async () => {
+    if (!PRIVATE_KEY) {
+      throw new Error(
+      'You must provide an account in the TEST_PRIVATE_KEY environment variable'
+      );
+    }
+
     await eth2.init();
     const wallet = await Wallet.create(PRIVATE_KEY);
     const balance = await wallet.getBalance({ ticker: 'BAT' });

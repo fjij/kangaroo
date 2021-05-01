@@ -1,9 +1,9 @@
 import { connect } from '../src/db/index.js';
 import { Token } from '../src/tokens/index.js';
 
-async function createToken(ticker) {
+async function createToken(ticker, name) {
   await connect();
-  const token = await (new Token({ ticker })).save();
+  const token = await (new Token({ ticker, name })).save();
   console.dir({
     id: token.id,
     ticker: token.ticker
@@ -11,14 +11,15 @@ async function createToken(ticker) {
 }
 
 const ticker = process.argv[2];
-if (ticker) {
-  createToken(ticker).then(() => {
+const name = process.argv[3];
+if (ticker && name) {
+  createToken(ticker, name).then(() => {
     process.exit(0);
   }).catch(e => {
     console.error(e);
     process.exit(1);
   });
 } else {
-  console.error('No ticker provided');
+  console.error('No ticker and name provided');
   process.exit(1);
 }

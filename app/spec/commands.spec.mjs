@@ -7,6 +7,7 @@ import { Pouch } from '../src/pouch/index.js';
 import { Token } from '../src/tokens/index.js';
 import * as eth2 from '../src/eth2/index.js';
 import { Amount } from '../src/eth2/amount.js';
+import { listTokens } from '../src/commands/listTokens.js';
 
 describe('help', () => {
   it('should respond with help text', () => {
@@ -48,9 +49,9 @@ describe('balance', () => {
 
   describe('with balance', () => {
     beforeAll(async () => {
-      const tokenETH = await (new Token({ ticker: 'ETH' })).save();
-      const tokenDAI = await (new Token({ ticker: 'DAI' })).save();
-      await (new Token({ ticker: 'DNT' })).save();
+      const tokenETH = await (new Token({ ticker: 'ETH', name: 'Ethereum' })).save();
+      const tokenDAI = await (new Token({ ticker: 'DAI', name: 'Dai'})).save();
+      await (new Token({ ticker: 'DNT', name: 'District0x' })).save();
       const userId = '1234';
       await (new Pouch({
         userId,
@@ -149,9 +150,9 @@ describe('balance', () => {
 
   describe('with no balance', () => {
     beforeAll(async () => {
-      await (new Token({ ticker: 'ETH' })).save();
-      await (new Token({ ticker: 'DAI' })).save();
-      await (new Token({ ticker: 'DNT' })).save();
+      await (new Token({ ticker: 'ETH', name: 'Ethereum' })).save();
+      await (new Token({ ticker: 'DAI', name: 'Dai'})).save();
+      await (new Token({ ticker: 'DNT', name: 'District0x' })).save();
     });
 
     afterAll(async () => {
@@ -264,5 +265,28 @@ describe('getOption', () => {
     const interaction = { data: {} };
     const value = getOption(interaction, 'abc');
     expect(value).toBeUndefined();
+  });
+});
+
+describe('list all tokens', () => {
+
+  beforeAll(async () => {
+    await connect();
+    await (new Token({ ticker: 'ETH', name: 'Ethereum' })).save();
+    await (new Token({ ticker: 'DAI', name: 'Dai'})).save();
+    await (new Token({ ticker: 'DNT', name: 'District0x' })).save();
+  });
+
+  afterAll(async () => {
+    await Token.deleteMany({});
+  });
+
+  it('should respond with all tokens', async () => {
+    const res = await(listTokens)({ type: 2 });
+    expect(res).toEqual(embedResponse({
+      title: 'All Supported Tokens📖',
+      "color": 15422875,
+      description: 'ETH | Ethereum\nDAI | Dai\nDNT | District0x'
+    }));
   });
 });
