@@ -11,7 +11,7 @@ async function createToken(ticker, name) {
 }
 
 const ticker = process.argv[2];
-const name = process.agrv[3];
+const name = process.argv[3];
 if (ticker && name) {
   createToken(ticker, name).then(() => {
     process.exit(0);
@@ -20,6 +20,6 @@ if (ticker && name) {
     process.exit(1);
   });
 } else {
-  console.error('No ticker provided');
+  console.error('No ticker and name provided');
   process.exit(1);
 }
