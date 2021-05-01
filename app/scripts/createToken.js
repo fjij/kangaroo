@@ -10,7 +10,8 @@ async function createToken(ticker, name) {
   });
 }
 
-const ticker = process.argv[3];
+const ticker = process.argv[2];
+const name = process.agrv[3];
 if (ticker && name) {
   createToken(ticker, name).then(() => {
     process.exit(0);
