@@ -1,4 +1,6 @@
 import * as eth2 from '../src/eth2/index.js';
+import { Amount } from '../src/eth2/amount.js';
+import { Wallet } from '../src/eth2/wallet.js';
 
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
 if (!PRIVATE_KEY) {
@@ -11,14 +13,14 @@ describe('Wallet', () => {
 
   beforeAll(async () => {
     await eth2.init();
-    const wallet = await eth2.Wallet.create(PRIVATE_KEY);
+    const wallet = await Wallet.create(PRIVATE_KEY);
     const balance = await wallet.getBalance({ ticker: 'BAT' });
     expect(parseFloat(balance.getStringValue())).toBeGreaterThanOrEqual(10);
   });
 
   it('can transfer to a new wallet, register and back', async () => {
-    const wallet = await eth2.Wallet.create(PRIVATE_KEY);
-    const wallet2 = await eth2.Wallet.create();
+    const wallet = await Wallet.create(PRIVATE_KEY);
+    const wallet2 = await Wallet.create();
 
     const token = { ticker: 'BAT' };
 
@@ -26,8 +28,8 @@ describe('Wallet', () => {
     const unlockFee2 = await wallet2.getUnlockFee(token);
     const transferFee2 = await wallet2.getTransferFee(token, wallet.getAddress());
 
-    const bufferAmount = eth2.Amount.fromStringValue(token, '0.02');
-    const sendBackAmount = eth2.Amount.fromStringValue(token, '0.05');
+    const bufferAmount = Amount.fromStringValue(token, '0.02');
+    const sendBackAmount = Amount.fromStringValue(token, '0.05');
 
     const sendAmount = unlockFee2.add(transferFee2)
       .add(bufferAmount)

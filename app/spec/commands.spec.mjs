@@ -6,6 +6,7 @@ import { connect } from '../src/db/index.js';
 import { Pouch } from '../src/pouch/index.js';
 import { Token } from '../src/tokens/index.js';
 import * as eth2 from '../src/eth2/index.js';
+import { Amount } from '../src/eth2/amount.js';
 
 describe('help', () => {
   it('should respond with help text', () => {
@@ -54,12 +55,12 @@ describe('balance', () => {
       await (new Pouch({
         userId,
         tokenId: tokenETH.id,
-        balance: eth2.Amount.fromStringValue({ ticker: 'ETH' }, '0.2').getValue().toString()
+        balance: Amount.fromStringValue({ ticker: 'ETH' }, '0.2').getValue().toString()
       })).save();
       await (new Pouch({
         userId,
         tokenId: tokenDAI.id,
-        balance: eth2.Amount.fromStringValue({ ticker: 'DAI' }, '30').getValue().toString()
+        balance: Amount.fromStringValue({ ticker: 'DAI' }, '30').getValue().toString()
       })).save();
     });
     

@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { Amount } from '../eth2/index.js';
+import { Amount } from '../eth2/amount.js';
 import { BigNumber } from 'ethers';
 const { Schema } = mongoose;
 
