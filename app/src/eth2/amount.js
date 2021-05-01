@@ -48,4 +48,10 @@ export class Amount {
   toString() {
     return `${this.getStringValue()} ${this.getToken().ticker}`;
   }
+
+  async getPrice() {
+    const price = await providers.getSyncProvider().getTokenPrice(this.token.ticker);
+    const dollars = (price*parseFloat(this.getStringValue())).toFixed(2);
+    return `$${dollars}`;
+  }
 }

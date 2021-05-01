@@ -20,7 +20,8 @@ export async function balance(interaction) {
       });
     }
 
-    const description = (await getBalance(userId, token)).toString();
+    const balance = await getBalance(userId, token);
+    const description = `${balance.toString()} - ${await balance.getPrice()}`;
 
     return embedResponse({
       title,
@@ -35,8 +36,11 @@ export async function balance(interaction) {
       tokens.map(async token => await getBalance(userId, token))
     )).filter(amount => amount.getValue().gt(0));
 
-    const description = (amounts.length > 0)?
-      amounts.map(amount => amount.toString()).join('\n'):
+    const amountStrings = (await Promise.all(
+      amounts.map(async a => `${a.toString()} - ${await a.getPrice()}`)
+    ));
+
+    const description = (amountStrings.length > 0)?amountStrings.join('\n'):
       'You don\'t have any tokens :(';
 
     return embedResponse({

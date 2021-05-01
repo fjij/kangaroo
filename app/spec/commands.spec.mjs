@@ -75,11 +75,17 @@ describe('balance', () => {
         user: { id: '1234' }
       };
       const res = await balance(interaction);
+      const description = res.data.embeds[0].description;
       expect(res).toEqual(embedResponse({
         title: 'ETH Balance',
         color: 15422875,
-        description: '0.2 ETH'
+        description
       }));
+      const [value, ticker, , price] = description.split(' ');
+      expect(value).toEqual('0.2');
+      expect(ticker).toEqual('ETH');
+      expect(price[0]).toEqual('$');
+      expect(parseFloat(price.slice(1))).toBeGreaterThan(0);
     });
 
     it('should respond with a specific balance if ticker is provided case-insensitive', async () => {
@@ -88,21 +94,43 @@ describe('balance', () => {
         user: { id: '1234' }
       };
       const res = await balance(interaction);
+      const description = res.data.embeds[0].description;
       expect(res).toEqual(embedResponse({
         title: 'DAI Balance',
         color: 15422875,
-        description: '30.0 DAI'
+        description
       }));
+      const [value, ticker, , price] = description.split(' ');
+      expect(value).toEqual('30.0');
+      expect(ticker).toEqual('DAI');
+      expect(price[0]).toEqual('$');
+      expect(parseFloat(price.slice(1))).toBeGreaterThan(0);
     });
 
     it('should respond with all balances if no options are provided', async () => {
       const interaction = { data: {}, user: { id: '1234' } };
       const res = await balance(interaction);
+      const description = res.data.embeds[0].description;
       expect(res).toEqual(embedResponse({
         title: 'All Balances',
         color: 15422875,
-        description: '0.2 ETH\n30.0 DAI'
+        description
       }));
+      const [ETHscription, DAIscription] = description.split('\n');
+      {
+        const [value, ticker, , price] = ETHscription.split(' ');
+        expect(value).toEqual('0.2');
+        expect(ticker).toEqual('ETH');
+        expect(price[0]).toEqual('$');
+        expect(parseFloat(price.slice(1))).toBeGreaterThan(0);
+      }
+      {
+        const [value, ticker, , price] = DAIscription.split(' ');
+        expect(value).toEqual('30.0');
+        expect(ticker).toEqual('DAI');
+        expect(price[0]).toEqual('$');
+        expect(parseFloat(price.slice(1))).toBeGreaterThan(0);
+      }
     });
 
     it('should respond with an error message if an invalid ticker is provided', async () => {
@@ -140,7 +168,7 @@ describe('balance', () => {
       }));
     });
 
-    it('should show a zero balance if no ticker is provided', async () => {
+    it('should show a zero balance if a ticker is provided', async () => {
       const interaction = {
         data: {
           options: [
@@ -153,11 +181,16 @@ describe('balance', () => {
         user: { id: '1234' }
       };
       const res = await balance(interaction);
+      const description = res.data.embeds[0].description;
       expect(res).toEqual(embedResponse({
         title: 'DAI Balance',
         color: 15422875,
-        description: '0.0 DAI'
+        description
       }));
+      const [value, ticker, , price] = description.split(' ');
+      expect(value).toEqual('0.0');
+      expect(ticker).toEqual('DAI');
+      expect(price).toEqual('$0.00');
     });
   });
 });
