@@ -114,7 +114,7 @@ describe('balance', () => {
       expect(res).toEqual(embedResponse({
         title: 'All Balances',
         color: 15422875,
-        description//: '0.2 ETH\n30.0 DAI'
+        description
       }));
       const [ETHscription, DAIscription] = description.split('\n');
       {
