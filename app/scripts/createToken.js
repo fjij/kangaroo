@@ -6,7 +6,8 @@ async function createToken(ticker, name) {
   const token = await (new Token({ ticker, name })).save();
   console.dir({
     id: token.id,
-    ticker: token.ticker
+    ticker: token.ticker,
+    name: token.name
   });
 }
 
