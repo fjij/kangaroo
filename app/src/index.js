@@ -1,5 +1,6 @@
 import express from 'express';
-import { connect } from './db/index.js';
+import * as db from './db/index.js';
+import * as eth2 from './eth2/index.js';
 import { parser, security } from './middleware/index.js';
 import { handleInteraction } from './interactions/index.js';
 import config from './config/index.js';
@@ -27,7 +28,8 @@ function registerApiRoute(app) {
 async function start() {
   app.use(parser);
   registerApiRoute(app);
-  await connect();
+  await db.connect();
+  await eth2.init();
   app.listen(config.port, () => {
     console.log(`App listening at http://localhost:${config.port}`);
   });
