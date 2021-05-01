@@ -24,7 +24,7 @@ export async function balance(interaction) {
 
     return embedResponse({
       title,
-      color: 13370886,
+      color: 15422875,
       description
     });
   } else {
@@ -41,7 +41,7 @@ export async function balance(interaction) {
 
     return embedResponse({
       title,
-      color: 13370886,
+      color: 15422875,
       description
     });
   }

@@ -77,7 +77,7 @@ describe('balance', () => {
       const res = await balance(interaction);
       expect(res).toEqual(embedResponse({
         title: 'ETH Balance',
-        color: 13370886,
+        color: 15422875,
         description: '0.2 ETH'
       }));
     });
@@ -90,7 +90,7 @@ describe('balance', () => {
       const res = await balance(interaction);
       expect(res).toEqual(embedResponse({
         title: 'DAI Balance',
-        color: 13370886,
+        color: 15422875,
         description: '30.0 DAI'
       }));
     });
@@ -100,7 +100,7 @@ describe('balance', () => {
       const res = await balance(interaction);
       expect(res).toEqual(embedResponse({
         title: 'All Balances',
-        color: 13370886,
+        color: 15422875,
         description: '0.2 ETH\n30.0 DAI'
       }));
     });
@@ -135,7 +135,7 @@ describe('balance', () => {
       const res = await balance(interaction);
       expect(res).toEqual(embedResponse({
         title: 'All Balances',
-        color: 13370886,
+        color: 15422875,
         description: 'You don\'t have any tokens :('
       }));
     });
@@ -155,7 +155,7 @@ describe('balance', () => {
       const res = await balance(interaction);
       expect(res).toEqual(embedResponse({
         title: 'DAI Balance',
-        color: 13370886,
+        color: 15422875,
         description: '0.0 DAI'
       }));
     });
