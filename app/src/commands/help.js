@@ -23,7 +23,7 @@ export function help(_interaction) {
       },
       {
         name: "Layer 2 Native 👏",
-        value: "Tip other users, deposit and withdraw ETH and ERC-20 tokens from your Layer 2 wallet. \n "
+        value: "Kangaroo lives on Layer 2 Ethereum. No slow or expensive user experience."
       }
     ]
   });
