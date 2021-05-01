@@ -1,7 +1,7 @@
 import { connect } from '../src/db/index.js';
 import { Token } from '../src/tokens/index.js';
 
-async function createToken(ticker) {
+async function createToken(ticker, name) {
   await connect();
   const token = await (new Token({ ticker, name })).save();
   console.dir({
@@ -10,9 +10,9 @@ async function createToken(ticker) {
   });
 }
 
-const ticker = process.argv[2];
-if (ticker) {
-  createToken(ticker).then(() => {
+const ticker = process.argv[3];
+if (ticker && name) {
+  createToken(ticker, name).then(() => {
     process.exit(0);
   }).catch(e => {
     console.error(e);
