@@ -11,10 +11,10 @@ describe('Tokens', () => {
   });
 
   it('should enforce a unique ticker', async () => {
-    await (new Token({ ticker: 'ETH' })).save();
+    await (new Token({ ticker: 'ETH', name: 'Ethereum' })).save();
     await new Promise(resolve => setTimeout(resolve, 100));
     try {
-      await (new Token({ ticker: 'ETH' })).save();
+      await (new Token({ ticker: 'ETH', name: 'Ethereum' })).save();
       throw new Error('Should reject!');
     } catch(e) {
       expect(e.name).toEqual('MongoError');
@@ -29,8 +29,8 @@ describe('getAllTokens', () => {
   });
 
   it('should get all tokens', async () => {
-    await (new Token({ ticker: 'ETH' })).save();
-    await (new Token({ ticker: 'DAI' })).save();
+    await (new Token({ ticker: 'ETH', name: 'Ethereum' })).save();
+    await (new Token({ ticker: 'DAI', name: 'Dai' })).save();
 
     const tokens = await getAllTokens();
     expect(tokens.length).toEqual(2);
@@ -52,8 +52,8 @@ describe('getTokenByTicker', () => {
 
   beforeAll(async () => {
     await connect();
-    await (new Token({ ticker: 'ETH' })).save();
-    const DAI = await (new Token({ ticker: 'DAI' })).save();
+    await (new Token({ ticker: 'ETH', name: 'Ethereum' })).save();
+    const DAI = await (new Token({ ticker: 'DAI', name: 'Dai' })).save();
     DAIid = DAI.id;
   });
 

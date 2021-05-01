@@ -3,7 +3,7 @@ import { Token } from '../src/tokens/index.js';
 
 async function createToken(ticker) {
   await connect();
-  const token = await (new Token({ ticker })).save();
+  const token = await (new Token({ ticker, name })).save();
   console.dir({
     id: token.id,
     ticker: token.ticker
