@@ -33,6 +33,9 @@ describe('Wallet', () => {
     const bufferAmount = Amount.fromStringValue(token, '0.02');
     const sendBackAmount = Amount.fromStringValue(token, '0.05');
 
+    expect(parseFloat((await sendBackAmount.getPrice()).slice(1)))
+      .toBeGreaterThan(0);
+
     const sendAmount = unlockFee2.add(transferFee2)
       .add(bufferAmount)
       .add(sendBackAmount);
