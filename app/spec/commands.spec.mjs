@@ -29,7 +29,7 @@ describe('help', () => {
         },
         {
           name: "The Basics 📘",
-          value: "Tip other users, deposit and withdraw ETH and ERC-20 tokens from your Layer 2 wallet. "
+          value: "Tip other users, deposit and withdraw ETH and ERC-20 tokens to your Layer 2 wallet. "
         },
         {
           name: "Layer 2 Native 👏",
@@ -189,7 +189,7 @@ describe('execute command', () => {
         },
         {
           name: "The Basics 📘",
-          value: "Tip other users, deposit and withdraw ETH and ERC-20 tokens from your Layer 2 wallet. "
+          value: "Tip other users, deposit and withdraw ETH and ERC-20 tokens to your Layer 2 wallet. "
         },
         {
           name: "Layer 2 Native 👏",

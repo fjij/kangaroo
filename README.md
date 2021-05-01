@@ -16,7 +16,7 @@ yet, give crypto funds that your community members can actually use.
 ## Features 🤩
 
 #### The Basics ✅
-Tip other users, deposit and withdraw ETH and ERC-20 tokens from your Layer 2
+Tip other users, deposit and withdraw ETH and ERC-20 tokens to your Layer 2
 wallet.
 
 #### Layer 2 Native 2️⃣
