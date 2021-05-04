@@ -19,6 +19,5 @@ export async function getOrCreateWallet(userId) {
     const wallet = await Wallet.create();
     await new User({ userId, privateKey: wallet.getPrivateKey()}).save();
     return wallet;
-    // TODO: DM user to tell them when a wallet has been created for them
   }
 }
