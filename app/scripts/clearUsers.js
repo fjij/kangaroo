@@ -1,12 +1,12 @@
 import { connect } from '../src/db/index.js';
-import { Pouch } from '../src/pouch/index.js';
+import { User } from '../src/user/index.js';
 
-async function clearPouches() {
+async function clearUsers() {
   await connect();
-  await Pouch.deleteMany({});
+  await User.deleteMany({});
 }
 
-clearPouches().then(() => {
+clearUsers().then(() => {
   process.exit(0);
 }).catch(e => {
   console.error(e);

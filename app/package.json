@@ -11,10 +11,10 @@
     "list-tokens": "node scripts/listTokens.js",
     "delete-token": "node scripts/deleteToken.js",
     "clear-tokens": "node scripts/clearTokens.js",
-    "create-pouch": "node scripts/createPouch.js",
-    "list-pouches": "node scripts/listPouches.js",
-    "delete-pouch": "node scripts/deletePouch.js",
-    "clear-pouches": "node scripts/clearPouches.js"
+    "create-user": "node scripts/createUser.js",
+    "list-users": "node scripts/listUsers.js",
+    "delete-user": "node scripts/deleteUser.js",
+    "clear-users": "node scripts/clearUsers.js"
   },
   "author": "",
   "license": "ISC",
