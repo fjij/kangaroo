@@ -3,10 +3,11 @@ import { balance } from '../src/commands/balance.js';
 import { executeCommand, getOption } from '../src/commands/index.js';
 import { embedResponse } from '../src/responses/index.js';
 import { connect } from '../src/db/index.js';
-import { Pouch } from '../src/pouch/index.js';
+import { User } from '../src/user/index.js';
 import { Token } from '../src/tokens/index.js';
 import * as eth2 from '../src/eth2/index.js';
 import { Amount } from '../src/eth2/amount.js';
+import { Wallet } from '../src/eth2/wallet.js';
 import { listTokens } from '../src/commands/listTokens.js';
 
 describe('help', () => {
@@ -42,31 +43,33 @@ describe('help', () => {
 });
 
 describe('balance', () => {
+  const PRIVATE_KEY = process.env.TEST_PRIVATE_KEY;
+
   beforeAll(async () => {
+    if (!PRIVATE_KEY) {
+      throw new Error(
+        'You must provide an account in the TEST_PRIVATE_KEY environment variable'
+      );
+    }
     await connect();
     await eth2.init();
   });
 
   describe('with balance', () => {
+    let balanceETH, balanceDAI;
     beforeAll(async () => {
-      const tokenETH = await (new Token({ ticker: 'ETH', name: 'Ethereum' })).save();
-      const tokenDAI = await (new Token({ ticker: 'DAI', name: 'Dai'})).save();
-      await (new Token({ ticker: 'DNT', name: 'District0x' })).save();
+      await (new Token({ ticker: 'ETH', name: 'Ethereum' })).save();
+      await (new Token({ ticker: 'DAI', name: 'Dai'})).save();
+      await (new Token({ ticker: 'USDT', name: 'USDT' })).save();
       const userId = '1234';
-      await (new Pouch({
-        userId,
-        tokenId: tokenETH.id,
-        balance: Amount.fromStringValue({ ticker: 'ETH' }, '0.2').getValue().toString()
-      })).save();
-      await (new Pouch({
-        userId,
-        tokenId: tokenDAI.id,
-        balance: Amount.fromStringValue({ ticker: 'DAI' }, '30').getValue().toString()
-      })).save();
+      await new User({ userId, privateKey: PRIVATE_KEY }).save();
+      const wallet = await Wallet.create(PRIVATE_KEY);
+      balanceETH = (await wallet.getBalance({ ticker: 'ETH' })).getStringValue();
+      balanceDAI = (await wallet.getBalance({ ticker: 'DAI' })).getStringValue();
     });
     
     afterAll(async () => {
-      await Pouch.deleteMany({});
+      await User.deleteMany({});
       await Token.deleteMany({});
     });
 
@@ -83,7 +86,7 @@ describe('balance', () => {
         description
       }));
       const [value, ticker, , price] = description.split(' ');
-      expect(value).toEqual('0.2');
+      expect(value).toEqual(balanceETH);
       expect(ticker).toEqual('ETH');
       expect(price[0]).toEqual('$');
       expect(parseFloat(price.slice(1))).toBeGreaterThan(0);
@@ -102,7 +105,7 @@ describe('balance', () => {
         description
       }));
       const [value, ticker, , price] = description.split(' ');
-      expect(value).toEqual('30.0');
+      expect(value).toEqual(balanceDAI);
       expect(ticker).toEqual('DAI');
       expect(price[0]).toEqual('$');
       expect(parseFloat(price.slice(1))).toBeGreaterThan(0);
@@ -120,14 +123,14 @@ describe('balance', () => {
       const [ETHscription, DAIscription] = description.split('\n');
       {
         const [value, ticker, , price] = ETHscription.split(' ');
-        expect(value).toEqual('0.2');
+        expect(value).toEqual(balanceETH);
         expect(ticker).toEqual('ETH');
         expect(price[0]).toEqual('$');
         expect(parseFloat(price.slice(1))).toBeGreaterThan(0);
       }
       {
         const [value, ticker, , price] = DAIscription.split(' ');
-        expect(value).toEqual('30.0');
+        expect(value).toEqual(balanceDAI);
         expect(ticker).toEqual('DAI');
         expect(price[0]).toEqual('$');
         expect(parseFloat(price.slice(1))).toBeGreaterThan(0);
@@ -152,12 +155,12 @@ describe('balance', () => {
     beforeAll(async () => {
       await (new Token({ ticker: 'ETH', name: 'Ethereum' })).save();
       await (new Token({ ticker: 'DAI', name: 'Dai'})).save();
-      await (new Token({ ticker: 'DNT', name: 'District0x' })).save();
+      await (new Token({ ticker: 'BAT', name: 'Basic Attention Token' })).save();
     });
 
     afterAll(async () => {
-      await Pouch.deleteMany({});
       await Token.deleteMany({});
+      await User.deleteMany({});
     });
     it('should show a no balance message if no options are provided', async () => {
       const interaction = { data: {}, user: { id: '1234' } };
@@ -274,7 +277,7 @@ describe('list all tokens', () => {
     await connect();
     await (new Token({ ticker: 'ETH', name: 'Ethereum' })).save();
     await (new Token({ ticker: 'DAI', name: 'Dai'})).save();
-    await (new Token({ ticker: 'DNT', name: 'District0x' })).save();
+    await (new Token({ ticker: 'BAT', name: 'Basic Attention Token' })).save();
   });
 
   afterAll(async () => {
@@ -286,7 +289,7 @@ describe('list all tokens', () => {
     expect(res).toEqual(embedResponse({
       title: 'All Supported Tokens📖',
       "color": 15422875,
-      description: 'ETH | Ethereum\nDAI | Dai\nDNT | District0x'
+      description: 'ETH | Ethereum\nDAI | Dai\nBAT | Basic Attention Token'
     }));
   });
 });

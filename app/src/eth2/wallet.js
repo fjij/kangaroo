@@ -52,6 +52,14 @@ export class Wallet {
     return new Amount(token, value);
   }
 
+  async getUnlocked() {
+    return await this.syncWallet.isSigningKeySet();
+  }
+
+  getPrivateKey() {
+    return this.ethersWallet.privateKey;
+  }
+
   getAddress() {
     return this.syncWallet.address();
   }

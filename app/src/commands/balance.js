@@ -1,12 +1,13 @@
 import { embedResponse } from '../responses/index.js';
 import { getOption } from './index.js';
 import { getUserId } from '../interactions/index.js';
-import { getBalance } from '../pouch/index.js';
+import { getOrCreateWallet } from '../user/index.js';
 import { getAllTokens, getTokenByTicker } from '../tokens/index.js';
 
 export async function balance(interaction) {
   const userId = getUserId(interaction);
   const ticker = getOption(interaction, 'ticker')?.toUpperCase();
+  const wallet = await getOrCreateWallet(userId);
 
   if (ticker) {
     const title = `${ticker} Balance`;
@@ -20,7 +21,7 @@ export async function balance(interaction) {
       });
     }
 
-    const balance = await getBalance(userId, token);
+    const balance = await wallet.getBalance(token);
     const description = `${balance.toString()} - ${await balance.getPrice()}`;
 
     return embedResponse({
@@ -33,7 +34,7 @@ export async function balance(interaction) {
     const tokens = await getAllTokens();
 
     const amounts = (await Promise.all(
-      tokens.map(async token => await getBalance(userId, token))
+      tokens.map(async token => await wallet.getBalance(token))
     )).filter(amount => amount.getValue().gt(0));
 
     const amountStrings = (await Promise.all(

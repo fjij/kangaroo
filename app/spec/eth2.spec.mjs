@@ -10,8 +10,9 @@ describe('Wallet', () => {
 
   beforeAll(async () => {
     if (!PRIVATE_KEY) {
+      await User.deleteMany({});
       throw new Error(
-      'You must provide an account in the TEST_PRIVATE_KEY environment variable'
+        'You must provide an account in the TEST_PRIVATE_KEY environment variable'
       );
     }
 
@@ -21,9 +22,19 @@ describe('Wallet', () => {
     expect(parseFloat(balance.getStringValue())).toBeGreaterThanOrEqual(10);
   });
 
+  it('can get private key', async () => {
+    const wallet = await Wallet.create(PRIVATE_KEY);
+    const privateKey = wallet.getPrivateKey();
+    expect(privateKey).toBeDefined();
+    expect(privateKey).toEqual(`0x${PRIVATE_KEY}`);
+  });
+
   it('can transfer to a new wallet, register and back', async () => {
     const wallet = await Wallet.create(PRIVATE_KEY);
     const wallet2 = await Wallet.create();
+
+    expect(await wallet.getUnlocked()).toBeTrue();
+    expect(await wallet2.getUnlocked()).toBeFalse();
 
     const token = { ticker: 'BAT' };
 
@@ -48,6 +59,9 @@ describe('Wallet', () => {
     expect(balance2.getValue()).toEqual(sendAmount.getClosestPackable().getValue());
 
     await wallet2.unlock(token);
+
+    expect(await wallet2.getUnlocked()).toBeTrue();
+
     await wallet2.transfer(token, wallet.getAddress(), sendBackAmount, transferFee2);
 
     expect((await wallet.getBalance(token)).getValue())
