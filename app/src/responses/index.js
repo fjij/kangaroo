@@ -17,3 +17,19 @@ export function embedResponse(embed) {
     }
   }
 }
+
+export function errorResponse(message) {
+  return embedResponse({
+    title: 'Error',
+    color: 13370886,
+    description: message,
+  });
+}
+
+export function tokenNotFoundResponse() {
+  return errorResponse('That token doesn\'t exist :(');
+}
+
+export function transactionFailedResponse() {
+  return errorResponse('Transaction failed.\nMake sure you have enough of the specified token to cover the cost plus any additional fees.');
+}

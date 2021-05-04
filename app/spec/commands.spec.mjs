@@ -1,14 +1,20 @@
 import { help } from '../src/commands/help.js';
 import { balance } from '../src/commands/balance.js';
 import { executeCommand, getOption } from '../src/commands/index.js';
-import { embedResponse } from '../src/responses/index.js';
+import {
+  embedResponse,
+  tokenNotFoundResponse,
+  transactionFailedResponse,
+} from '../src/responses/index.js';
 import { connect } from '../src/db/index.js';
-import { User } from '../src/user/index.js';
+import { User, getOrCreateWallet } from '../src/user/index.js';
 import { Token } from '../src/tokens/index.js';
 import * as eth2 from '../src/eth2/index.js';
 import { Amount } from '../src/eth2/amount.js';
 import { Wallet } from '../src/eth2/wallet.js';
 import { listTokens } from '../src/commands/listTokens.js';
+import { unlock } from '../src/commands/unlock.js';
+import { getString } from '../src/strings/index.js';
 
 describe('help', () => {
   it('should respond with help text', () => {
@@ -143,11 +149,7 @@ describe('balance', () => {
         user: { id: '1234' }
       };
       const res = await balance(interaction);
-      expect(res).toEqual(embedResponse({
-        title: 'Error',
-        color: 13370886,
-        description: 'That token doesn\'t exist :('
-      }));
+      expect(res).toEqual(tokenNotFoundResponse());
     });
   });
 
@@ -291,5 +293,125 @@ describe('list all tokens', () => {
       "color": 15422875,
       description: 'ETH | Ethereum\nDAI | Dai\nBAT | Basic Attention Token'
     }));
+  });
+});
+
+describe('unlock', () => {
+  const PRIVATE_KEY = process.env.TEST_PRIVATE_KEY;
+
+  beforeAll(async () => {
+    if (!PRIVATE_KEY) {
+      throw new Error(
+        'You must provide an account in the TEST_PRIVATE_KEY environment variable'
+      );
+    }
+    await connect();
+    await eth2.init();
+    await (new Token({ ticker: 'ETH', name: 'Ethereum' })).save();
+    await (new Token({ ticker: 'DAI', name: 'Dai'})).save();
+  });
+
+  afterAll(async () => {
+    await Token.deleteMany({});
+    await User.deleteMany({});
+  });
+
+  it('should return information when no arguments', async () => {
+    const res = await unlock({
+      data: {},
+      user: { id: '1234' }
+    });
+    expect(res).toEqual(embedResponse({
+      title: 'Unlocking Your Wallet',
+      color: 15422875,
+      description: [
+        getString('unlockGeneralInfo'),
+        getString('unlockInstructions'),
+      ].join('\n\n')
+    }));
+    await User.deleteMany({});
+  });
+
+  it('should return already unlocked message if already unlocked', async () => {
+    await new User({ userId: '1234', privateKey: PRIVATE_KEY }).save();
+    const res = await unlock({
+      data: {},
+      user: { id: '1234' }
+    });
+    expect(res).toEqual(embedResponse({
+      title: 'Wallet already unlocked',
+      color: 15422875,
+      description: [
+        getString('unlockGeneralInfo'),
+        getString('alreadyUnlocked'),
+      ].join('\n\n')
+    }));
+    await User.deleteMany({});
+  });
+
+  it('should transaction preview when only ticker is provided', async () => {
+    const res = await unlock({
+      data: { options: [ { name: 'ticker', value: 'DAI' } ] },
+      user: { id: '1234' }
+    });
+    await new Promise(resolve => setTimeout(resolve, 100));
+    const wallet = await getOrCreateWallet('1234');
+    const fee = (await wallet.getUnlockFee({ ticker: 'DAI' }))
+      .getClosestPackable();
+    expect(res).toEqual(embedResponse({
+      title: 'Unlock with DAI',
+      color: 15422875,
+      description: [
+        'Unlock your wallet using DAI?',
+        `${fee.toString()} - ${await fee.getPrice()}`,
+        'Do `/unlock DAI confirm` to confirm the transaction.',
+      ].join('\n\n')
+    }));
+    await User.deleteMany({});
+  });
+
+  it('should unlock a wallet when confirmed', async () => {
+    // Transfer the required fees
+    const rootWallet = await Wallet.create(PRIVATE_KEY);
+    const wallet = await getOrCreateWallet('1234');
+    const sendAmount = (await wallet.getUnlockFee({ ticker: 'DAI' }))
+      .add(Amount.fromStringValue({ ticker: 'DAI' }, '0.01'));
+    await rootWallet.transfer(
+      { ticker: 'DAI' },
+      wallet.getAddress(),
+      sendAmount,
+      await rootWallet.getTransferFee({ ticker: 'DAI' }, wallet.getAddress())
+    );
+
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    const res = await unlock({
+      data: { options: [
+        { name: 'ticker', value: 'DAI' },
+        { name: 'confirm', value: 'confirm' }
+      ] },
+      user: { id: '1234' }
+    });
+    expect(await wallet.getUnlocked()).toBeTrue();
+    expect(res).toEqual(embedResponse({
+      title: 'Unlock with DAI',
+      color: 15422875,
+      description: [
+        'Wallet unlocked.',
+      ].join('\n\n')
+    }));
+    await User.deleteMany({});
+  });
+
+  it('should fail if there isn\'t enought balance', async () => {
+    const res = await unlock({
+      data: { options: [
+        { name: 'ticker', value: 'ETH' },
+        { name: 'confirm', value: 'confirm' }
+      ] },
+      user: { id: '1234' }
+    });
+    expect(res).toEqual(transactionFailedResponse());
+    await User.deleteMany({});
   });
 });

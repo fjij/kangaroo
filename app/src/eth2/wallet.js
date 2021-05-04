@@ -33,7 +33,7 @@ export class Wallet {
 
   // Unlock zkSync account using token
   async unlock(token) {
-    if (!(await this.syncWallet.isSigningKeySet())) {
+    if (!(await this.getUnlocked())) {
       if ((await this.syncWallet.getAccountId()) == undefined) {
         throw new Error('Unknown account');
       }
@@ -43,7 +43,9 @@ export class Wallet {
         ethAuthType: 'ECDSA',
       });
 
-      await changePubkey.awaitReceipt();
+      return await changePubkey.awaitReceipt();
+    } else {
+      throw new Error('Already unlocked');
     }
   }
 
