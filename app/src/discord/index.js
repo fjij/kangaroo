@@ -5,5 +5,5 @@ const baseUrl = 'https://discord.com/api/v8/';
 
 export async function editInteractionResponse(interaction, newResponse) {
   const url = `/${config.appId}/${interaction.token}/messages/@original`;
-  await axios.patch(new URL(url, baseUrl), newResponse.data);
+  await axios.patch(new URL(url, baseUrl).href, newResponse.data);
 }
