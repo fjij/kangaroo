@@ -109,6 +109,10 @@ export function tokenNotFoundResponse() {
   return errorResponse('That token doesn\'t exist :(');
 }
 
+export function notUnlockedResponse() {
+  return errorResponse('Transaction failed.\n\nYou must unlock your wallet with `/unlock` in order to send transcations.');
+}
+
 export function transactionFailedResponse() {
-  return errorResponse('Transaction failed.\nMake sure you have enough of the specified token to cover the cost plus any additional fees.');
+  return errorResponse('Transaction failed.\n\nMake sure you have enough of the specified token to cover the cost plus any additional fees.');
 }

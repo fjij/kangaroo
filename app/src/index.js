@@ -15,6 +15,8 @@ function registerApiRoute(app) {
     const interaction = req.body;
     try {
       const response = await handleInteraction(interaction);
+      console.log('Response:');
+      console.log(JSON.stringify(response, null, 2));
       res.send(response);
     } catch(error) {
       console.log('Interaction:');

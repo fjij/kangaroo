@@ -9,7 +9,8 @@ import {
   transactionResponse,
   tokenNotFoundResponse,
   invalidAmountResponse,
-  transactionFailedResponse
+  transactionFailedResponse,
+  notUnlockedResponse,
 } from '../responses/index.js';
 import { Amount } from '../eth2/amount.js';
 
@@ -41,6 +42,9 @@ export async function send(interaction) {
     const recipientWallet = await getOrCreateWallet(recipientId);
     const feeAmount = await userWallet.getTransferFee(token, recipientWallet.getAddress());
     if (confirm === 'CONFIRM') {
+      if (!await userWallet.getUnlocked()) {
+        return notUnlockedResponse();
+      }
       try {
         await userWallet.transfer(
           token,

@@ -10,6 +10,7 @@ import {
   invalidAmountResponse,
   sendHelpResponse,
   missingOptionsResponse,
+  notUnlockedResponse,
 } from '../src/responses/index.js';
 import { connect } from '../src/db/index.js';
 import { User, getOrCreateWallet } from '../src/user/index.js';
@@ -519,6 +520,20 @@ describe('send/tip', () => {
         .getClosestPackable(),
       '/send 0.2 ETH @<insert user> confirm'
     ));
+    await User.deleteMany({});
+  });
+
+  it('should fail if wallet is not unlocked', async () => {
+    const res = await send({
+      data: { name: 'send', options: [
+        { name: 'amount', value: '0.01' },
+        { name: 'ticker', value: 'DAI' },
+        { name: 'user', value: '2345' },
+        { name: 'confirm', value: 'confirm' },
+      ] },
+      user: { id: '1234' }
+    });
+    expect(res).toEqual(notUnlockedResponse());
     await User.deleteMany({});
   });
 
