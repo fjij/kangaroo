@@ -4,6 +4,8 @@ import config from '../config/index.js';
 const baseUrl = 'https://discord.com/api/v8';
 
 export async function editInteractionResponse(interaction, newResponse) {
-  const url = `/${config.appId}/${interaction.token}/messages/@original`;
-  await axios.patch(baseUrl + url, newResponse.data);
+  const url = `/webhooks/${config.appId}/${interaction.token}/messages/@original`;
+  await axios.patch(baseUrl + url, newResponse.data, {
+    headers: { Authorization: config.discordAuth }
+  });
 }

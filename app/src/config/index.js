@@ -5,5 +5,6 @@ export default {
   port: process.env.PORT || 3000,
   appPublicKey: process.env.APPLICATION_PUBLIC_KEY || '',
   appId: process.env.APPLICATION_ID || '',
+  discordAuth: process.env.DISCORD_AUTHORIZATION || '',
   chainName: process.env.CHAIN_NAME || 'rinkeby',
 };
