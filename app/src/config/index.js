@@ -4,5 +4,6 @@ export default {
   interactEndpoint: process.env.INTERACTIONS_ENDPOINT || '/api/interactions',
   port: process.env.PORT || 3000,
   appPublicKey: process.env.APPLICATION_PUBLIC_KEY || '',
+  appId: process.env.APPLICATION_ID || '',
   chainName: process.env.CHAIN_NAME || 'rinkeby',
 };

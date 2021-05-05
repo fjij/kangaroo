@@ -7,6 +7,12 @@ export function messageResponse(content) {
   }
 }
 
+export function deferredResponse() {
+  return {
+    type: 5,
+  }
+}
+
 export function embedResponse(embed) {
   return {
     type: 4,
