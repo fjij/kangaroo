@@ -18,7 +18,7 @@ function registerApiRoute(app) {
       res.send(response);
     } catch(error) {
       console.log('Interaction:');
-      console.log(interaction);
+      console.log(JSON.stringify(interaction, null, 2));
       console.error(error);
       res.send({ type: 4, data: {
         content: `Error: ${error.message}`
