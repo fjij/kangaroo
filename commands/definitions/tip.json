@@ -1,0 +1,26 @@
+{
+  "name": "tip",
+  "description": "Send someone some tokens",
+  "options": [
+    {
+      "name": "amount",
+      "description": "Amount to send, in tokens (not dollars)",
+      "type": 3
+    },
+    {
+      "name": "ticker",
+      "description": "Token ticker symbol - Example: ETH for Ethereum",
+      "type": 3
+    },
+    {
+      "name": "user",
+      "description": "Who to send to",
+      "type": 6
+    },
+    {
+      "name": "confirm",
+      "description": "Leave this blank to preview the transaction. Type confirm to confirm it.",
+      "type": 3
+    }
+  ]
+}

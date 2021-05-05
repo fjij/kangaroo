@@ -8,6 +8,9 @@ export class Amount {
     }
     const bigNumber = providers.getSyncProvider().tokenSet
       .parseToken(token.ticker, value);
+    if (bigNumber.lt(0)) {
+      throw new Error('Amounts must be positive number');
+    }
     return new Amount(token, bigNumber);
   }
 
