@@ -18,15 +18,13 @@ function registerApiRoute(app) {
     try {
       res.send(deferredResponse());
       const response = await handleInteraction(interaction);
-      console.log('Response:');
-      console.log(JSON.stringify(response, null, 2));
       await editInteractionResponse(interaction, response);
     } catch(error) {
       console.log('Interaction:');
       console.log(JSON.stringify(interaction, null, 2));
       console.error(error);
       res.send({ type: 4, data: {
-        content: `Error: ${error.message}`
+        content: 'Server Error.'
       }});
     };
   });
