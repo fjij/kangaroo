@@ -17,16 +17,16 @@ export async function send(interaction) {
   const userId = getUserId(interaction);
   const amount = getOption(interaction, 'amount');
   const ticker = getOption(interaction, 'ticker')?.toUpperCase();
-  const recipient = getOption(interaction, 'user');
+  const recipientId = getOption(interaction, 'user');
   const confirm = getOption(interaction, 'confirm')?.toUpperCase();
 
   const sendOrTip = interaction.data.name;
 
-  if (!amount && !ticker && !recipient && !confirm) {
+  if (!amount && !ticker && !recipientId && !confirm) {
     return sendHelpResponse(sendOrTip);
   }
 
-  if (amount && ticker && recipient) {
+  if (amount && ticker && recipientId) {
     const token = await getTokenByTicker(ticker);
     if (!token) {
       return tokenNotFoundResponse();
@@ -38,7 +38,7 @@ export async function send(interaction) {
       return invalidAmountResponse();
     }
     const userWallet = await getOrCreateWallet(userId);
-    const recipientWallet = await getOrCreateWallet(recipient.id);
+    const recipientWallet = await getOrCreateWallet(recipientId);
     const feeAmount = await userWallet.getTransferFee(token, recipientWallet.getAddress());
     if (confirm === 'CONFIRM') {
       try {
@@ -61,7 +61,7 @@ export async function send(interaction) {
         'Transfer tokens',
         primaryAmount.getClosestPackable(),
         feeAmount.getClosestPackable(),
-        `/${sendOrTip} ${amount} ${ticker} @${recipient.username}#${recipient.discriminator} confirm`
+        `/${sendOrTip} ${amount} ${ticker} @<insert user> confirm`
       );
     }
   } else {
@@ -72,7 +72,7 @@ export async function send(interaction) {
     if (!ticker) {
       missingOptions.push('ticker');
     }
-    if (!recipient) {
+    if (!recipientId) {
       missingOptions.push('user');
     }
     return missingOptionsResponse(missingOptions);

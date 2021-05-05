@@ -533,7 +533,7 @@ describe('send/tip', () => {
       Amount.fromStringValue({ ticker: 'ETH' }, '0.2').getClosestPackable(),
       (await wallet.getTransferFee({ ticker: 'ETH' }, targetWallet.getAddress()))
         .getClosestPackable(),
-      '/send 0.2 ETH @Roo#2345 confirm'
+      '/send 0.2 ETH @<insert user> confirm'
     ));
     await User.deleteMany({});
   });
