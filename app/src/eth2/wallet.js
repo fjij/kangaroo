@@ -76,6 +76,7 @@ export class Wallet {
   }
 
   async getTransferFee(token, address) {
+    console.log(`getTransferFee, ${token.ticker}, ${address}`);
     const fee = await providers.getSyncProvider().getTransactionFee(
       'Transfer',
       address,
