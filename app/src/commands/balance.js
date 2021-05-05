@@ -1,4 +1,4 @@
-import { embedResponse } from '../responses/index.js';
+import { embedResponse, tokenNotFoundResponse } from '../responses/index.js';
 import { getOption } from './index.js';
 import { getUserId } from '../interactions/index.js';
 import { getOrCreateWallet } from '../user/index.js';
@@ -14,11 +14,7 @@ export async function balance(interaction) {
     const token = await getTokenByTicker(ticker);
 
     if (!token) {
-      return embedResponse({
-        title: 'Error',
-        color: 13370886,
-        description: 'That token doesn\'t exist :('
-      });
+      return tokenNotFoundResponse();
     }
 
     const balance = await wallet.getBalance(token);
