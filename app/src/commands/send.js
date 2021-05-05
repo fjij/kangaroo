@@ -2,6 +2,8 @@ import { getOption } from './index.js';
 import { getUserId } from '../interactions/index.js';
 import { getOrCreateWallet } from '../user/index.js';
 import { getTokenByTicker } from '../tokens/index.js';
+import { getUserById } from '../discord/index.js';
+import config from '../config/index.js';
 import {
   missingOptionsResponse,
   sendHelpResponse,
@@ -61,11 +63,16 @@ export async function send(interaction) {
         feeAmount.getClosestPackable(),
       );
     } else {
+      let userText = '@<insert user>';
+      if (config.discordAuth !== '') {
+        const recipientUser = await getUserById(recipientId);
+        userText = `@${recipientUser.username}#${recipientUser.discriminator}`;
+      }
       return await previewTransactionResponse(
         'Transfer tokens',
         primaryAmount.getClosestPackable(),
         feeAmount.getClosestPackable(),
-        `/${sendOrTip} ${amount} ${ticker} @<insert user> confirm`
+        `/${sendOrTip} ${amount} ${ticker} ${userText} confirm`
       );
     }
   } else {

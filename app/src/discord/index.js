@@ -9,3 +9,11 @@ export async function editInteractionResponse(interaction, newResponse) {
     headers: { Authorization: config.discordAuth }
   });
 }
+
+export async function getUserById(userId) {
+  const url = `/users/${userId}`;
+  const res = await axios.get(baseUrl + url, {
+    headers: { Authorization: config.discordAuth }
+  });
+  return res.data;
+}
