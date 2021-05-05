@@ -15,15 +15,15 @@ function registerApiRoute(app) {
   }
   app.post(config.interactEndpoint, async (req, res) => {
     const interaction = req.body;
+    res.send(deferredResponse());
     try {
-      res.send(deferredResponse());
       const response = await handleInteraction(interaction);
       await editInteractionResponse(interaction, response);
     } catch(error) {
       console.log('Interaction:');
       console.log(JSON.stringify(interaction, null, 2));
       console.error(error);
-      res.send({ type: 4, data: {
+      await editInteractionResponse(interaction, { type: 4, data: {
         content: 'Server Error.'
       }});
     };
