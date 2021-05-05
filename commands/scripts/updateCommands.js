@@ -35,7 +35,7 @@ async function updateCommandsGuild() {
     if (res.status === 200) {
       console.log('OK');
     }
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise(resolve => setTimeout(resolve, 5000));
   }
 }
 
