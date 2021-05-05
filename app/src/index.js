@@ -17,6 +17,8 @@ function registerApiRoute(app) {
       const response = await handleInteraction(interaction);
       res.send(response);
     } catch(error) {
+      console.log('Interaction:');
+      console.log(interaction);
       console.error(error);
       res.send({ type: 4, data: {
         content: `Error: ${error.message}`
