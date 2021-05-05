@@ -467,11 +467,7 @@ describe('send/tip', () => {
       data: { name: 'send', options: [
         { name: 'amount', value: '0.2' },
         { name: 'ticker', value: 'FAKE' },
-        { name: 'user', value: {
-          id: '2345',
-          username: 'Roo',
-          discriminator: '2345',
-        } }
+        { name: 'user', value: '2345' },
       ] },
       user: { id: '1234' }
     });
@@ -484,11 +480,7 @@ describe('send/tip', () => {
       data: { name: 'send', options: [
         { name: 'amount', value: 'pizza' },
         { name: 'ticker', value: 'ETH' },
-        { name: 'user', value: {
-          id: '2345',
-          username: 'Roo',
-          discriminator: '2345',
-        } }
+        { name: 'user', value: '2345' },
       ] },
       user: { id: '1234' }
     });
@@ -501,11 +493,7 @@ describe('send/tip', () => {
       data: { name: 'send', options: [
         { name: 'amount', value: '-1' },
         { name: 'ticker', value: 'ETH' },
-        { name: 'user', value: {
-          id: '2345',
-          username: 'Roo',
-          discriminator: '2345',
-        } }
+        { name: 'user', value: '2345' },
       ] },
       user: { id: '1234' }
     });
@@ -518,11 +506,7 @@ describe('send/tip', () => {
       data: { name: 'send', options: [
         { name: 'amount', value: '0.2' },
         { name: 'ticker', value: 'ETH' },
-        { name: 'user', value: {
-          id: '2345',
-          username: 'Roo',
-          discriminator: '2345',
-        } }
+        { name: 'user', value: '2345' },
       ] },
       user: { id: '1234' }
     });
@@ -553,11 +537,7 @@ describe('send/tip', () => {
       data: { name: 'send', options: [
         { name: 'amount', value: '0.01' },
         { name: 'ticker', value: 'DAI' },
-        { name: 'user', value: {
-          id: '2345',
-          username: 'Roo',
-          discriminator: '2345',
-        } },
+        { name: 'user', value: '2345' },
         { name: 'confirm', value: 'confirm' },
       ] },
       user: { id: '1234' }
