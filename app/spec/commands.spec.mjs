@@ -8,7 +8,9 @@ import {
   transactionResponse,
   previewTransactionResponse,
   invalidAmountResponse,
+  invalidAddressResponse,
   sendHelpResponse,
+  withdrawHelpResponse,
   missingOptionsResponse,
   notUnlockedResponse,
 } from '../src/responses/index.js';
@@ -21,6 +23,7 @@ import { Wallet } from '../src/eth2/wallet.js';
 import { listTokens } from '../src/commands/listTokens.js';
 import { unlock } from '../src/commands/unlock.js';
 import { send } from '../src/commands/send.js';
+import { withdraw } from '../src/commands/withdraw.js';
 import { getString } from '../src/strings/index.js';
 
 describe('help', () => {
@@ -561,6 +564,171 @@ describe('send/tip', () => {
       'Transfer tokens',
       primaryAmount,
       feeAmount,
+    ));
+    expect(await targetWallet.getBalance({ ticker: 'DAI' }))
+      .toEqual(Amount.fromStringValue({ ticker: 'DAI' }, '0.01').getClosestPackable());
+    await User.deleteMany({});
+  });
+});
+
+describe('withdraw', () => {
+  const PRIVATE_KEY = process.env.TEST_PRIVATE_KEY;
+
+  beforeAll(async () => {
+    if (!PRIVATE_KEY) {
+      throw new Error(
+        'You must provide an account in the TEST_PRIVATE_KEY environment variable'
+      );
+    }
+    await connect();
+    await eth2.init();
+    await (new Token({ ticker: 'ETH', name: 'Ethereum' })).save();
+    await (new Token({ ticker: 'DAI', name: 'Dai'})).save();
+  });
+
+  afterAll(async () => {
+    await Token.deleteMany({});
+    await User.deleteMany({});
+  });
+
+  it('should return information when no options', async () => {
+    const res = await withdraw({
+      data: { name: 'withdraw' },
+      user: { id: '1234' }
+    });
+    expect(res).toEqual(withdrawHelpResponse());
+    await User.deleteMany({});
+  });
+
+  it('should fail if not enough options are provided', async () => {
+    const res = await withdraw({
+      data: { name: 'withdraw', options: [
+        { name: 'amount', value: '0.2' }
+      ] },
+      user: { id: '1234' }
+    });
+    expect(res).toEqual(missingOptionsResponse(['ticker', 'address']));
+    await User.deleteMany({});
+  });
+
+  it('should fail if an invalid ticker is provided', async () => {
+    const targetWallet = await Wallet.create();
+    const res = await withdraw({
+      data: { options: [
+        { name: 'amount', value: '0.2' },
+        { name: 'ticker', value: 'FAKE' },
+        { name: 'address', value: targetWallet.getAddress() },
+      ] },
+      user: { id: '1234' }
+    });
+    expect(res).toEqual(tokenNotFoundResponse());
+    await User.deleteMany({});
+  });
+
+  it('should fail if an invalid address is provided', async () => {
+    const res = await withdraw({
+      data: { options: [
+        { name: 'amount', value: '0.2' },
+        { name: 'ticker', value: 'ETH' },
+        { name: 'address', value: 'grapes' },
+      ] },
+      user: { id: '1234' }
+    });
+    expect(res).toEqual(invalidAddressResponse());
+    await User.deleteMany({});
+  });
+
+  it('should fail for an invalid amount', async () => {
+    const targetWallet = await Wallet.create();
+    const res = await withdraw({
+      data: { options: [
+        { name: 'amount', value: 'pizza' },
+        { name: 'ticker', value: 'ETH' },
+        { name: 'address', value: targetWallet.getAddress() },
+      ] },
+      user: { id: '1234' }
+    });
+    expect(res).toEqual(invalidAmountResponse());
+    await User.deleteMany({});
+  });
+  
+  it('should fail for a negative amount', async () => {
+    const targetWallet = await Wallet.create();
+    const res = await withdraw({
+      data: { options: [
+        { name: 'amount', value: '-1' },
+        { name: 'ticker', value: 'ETH' },
+        { name: 'address', value: targetWallet.getAddress() },
+      ] },
+      user: { id: '1234' }
+    });
+    expect(res).toEqual(invalidAmountResponse());
+    await User.deleteMany({});
+  });
+
+  it('should preview a transaction', async () => {
+    const wallet = await getOrCreateWallet('1234');
+    const targetWallet = await Wallet.create();
+    await new Promise(resolve => setTimeout(resolve, 100));
+    const res = await withdraw({
+      data: { options: [
+        { name: 'amount', value: '0.2' },
+        { name: 'ticker', value: 'ETH' },
+        { name: 'address', value: targetWallet.getAddress() },
+      ] },
+      user: { id: '1234' }
+    });
+    expect(res).toEqual(await previewTransactionResponse(
+      `Withdraw tokens to ${targetWallet.getAddress()}`,
+      Amount.fromStringValue({ ticker: 'ETH' }, '0.2').getClosestPackable(),
+      (await wallet.getTransferFee({ ticker: 'ETH' }, targetWallet.getAddress()))
+        .getClosestPackable(),
+      `/withdraw 0.2 ETH ${targetWallet.getAddress()} confirm`,
+      'TODO: include zksync insert (do this on aesthetic update)',
+    ));
+    await User.deleteMany({});
+  });
+
+  it('should fail if wallet is not unlocked', async () => {
+    const targetWallet = await Wallet.create();
+    const res = await withdraw({
+      data: { options: [
+        { name: 'amount', value: '0.01' },
+        { name: 'ticker', value: 'DAI' },
+        { name: 'address', value: targetWallet.getAddress() },
+        { name: 'confirm', value: 'confirm' },
+      ] },
+      user: { id: '1234' }
+    });
+    expect(res).toEqual(notUnlockedResponse());
+    await User.deleteMany({});
+  });
+
+  it('should withdraw a transaction with confirm', async () => {
+    await new User({ userId: '1234', privateKey: PRIVATE_KEY}).save();
+    await new Promise(resolve => setTimeout(resolve, 100));
+    const wallet = await getOrCreateWallet('1234');
+    const targetWallet = await Wallet.create();
+    const primaryAmount = Amount.fromStringValue({ ticker: 'DAI' }, '0.01')
+      .getClosestPackable();
+    const feeAmount = (await wallet.getTransferFee(
+      { ticker: 'DAI' },
+      targetWallet.getAddress()
+    )).getClosestPackable();
+    const res = await withdraw({
+      data: { options: [
+        { name: 'amount', value: '0.01' },
+        { name: 'ticker', value: 'DAI' },
+        { name: 'address', value: targetWallet.getAddress() },
+        { name: 'confirm', value: 'confirm' },
+      ] },
+      user: { id: '1234' }
+    });
+    expect(res).toEqual(await transactionResponse(
+      `Withdraw tokens to ${targetWallet.getAddress()}`,
+      primaryAmount,
+      feeAmount,
+      'TODO: include zksync insert (do this on aesthetic update)',
     ));
     expect(await targetWallet.getBalance({ ticker: 'DAI' }))
       .toEqual(Amount.fromStringValue({ ticker: 'DAI' }, '0.01').getClosestPackable());
