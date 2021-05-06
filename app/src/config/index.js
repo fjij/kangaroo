@@ -5,4 +5,5 @@ export default {
   port: process.env.PORT || 3000,
   appPublicKey: process.env.APPLICATION_PUBLIC_KEY || '',
   chainName: process.env.CHAIN_NAME || 'rinkeby',
+  zkLink: "[zkSync rinkeby](https://rinkeby.zksync.io/)",
 };
