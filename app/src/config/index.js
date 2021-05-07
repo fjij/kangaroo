@@ -8,4 +8,5 @@ export default {
   discordAuth: process.env.DISCORD_AUTHORIZATION || '',
   discordBaseUrl: process.env.DISCORD_BASE_URL || 'https://discord.com/api/v8',
   chainName: process.env.CHAIN_NAME || 'rinkeby',
+  zkLink: "[zkSync rinkeby](https://rinkeby.zksync.io/)",
 };

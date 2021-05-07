@@ -3,6 +3,7 @@ import { help } from './help.js';
 import { balance } from './balance.js';
 import { listTokens } from './listTokens.js';
 import { unlock } from './unlock.js';
+import { deposit } from './deposit.js';
 import { send } from './send.js';
 
 export function getOption(interaction, name) {
@@ -36,6 +37,10 @@ export async function executeCommand(interaction) {
       return await unlock(interaction);
     }
 
+    case 'deposit': {
+      return await deposit(interaction)
+    }
+      
     case 'send':
     case 'tip': {
       return await send(interaction);
