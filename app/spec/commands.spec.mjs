@@ -603,7 +603,7 @@ describe('send/tip', () => {
   });
 });
 
-fdescribe('withdraw', () => {
+describe('withdraw', () => {
   const PRIVATE_KEY = process.env.TEST_PRIVATE_KEY;
 
   beforeAll(async () => {
