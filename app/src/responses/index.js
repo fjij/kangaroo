@@ -48,25 +48,11 @@ export function sendHelpResponse(sendOrTip) {
   });
 }
 
-export function withdrawHelpResponse() {
-  return embedResponse({
-    title: `Withdrawing Tokens`,
-    color: 15422875,
-    description: [
-      `How to withdraw tokens`,
-      'Example: `/withdraw 15 DAI 0x1AF42fEbCd301322f70C6362594f6b686B2815A8` to preview transaction',
-      'Example: `/withdraw 15 DAI 0x1AF42fEbCd301322f70C6362594f6b686B2815A8 confirm` to send transaction',
-      'TODO: include zksync insert (do this on aesthetic update)',
-    ].join('\n\n'),
-  });
-}
-
 export async function previewTransactionResponse(
   description,
   primaryAmount,
   feeAmount,
-  confirmCommand,
-  extraInfo = null,
+  confirmCommand
 ) {
   const texts = [];
   texts.push(description);
@@ -81,9 +67,6 @@ export async function previewTransactionResponse(
     texts.push(`Total:\n${total.toString()} - ${await total.getPrice()}`);
   }
   texts.push(`\`${confirmCommand}\` to confirm transaction`);
-  if (extraInfo) {
-    texts.push(extraInfo);
-  }
 
   return embedResponse({
     title: 'Preview Transaction',
@@ -95,8 +78,7 @@ export async function previewTransactionResponse(
 export async function transactionResponse(
   description,
   primaryAmount,
-  feeAmount,
-  extraInfo = null,
+  feeAmount
 ) {
   const texts = [];
   texts.push(description);
@@ -109,9 +91,6 @@ export async function transactionResponse(
   if (primaryAmount && feeAmount) {
     const total = primaryAmount.add(feeAmount);
     texts.push(`Total:\n${total.toString()} - ${await total.getPrice()}`);
-  }
-  if (extraInfo) {
-    texts.push(extraInfo);
   }
 
   return embedResponse({
@@ -136,12 +115,8 @@ export function tokenNotFoundResponse() {
   return errorResponse('That token doesn\'t exist :(');
 }
 
-export function invalidAddressResponse() {
-  return errorResponse('Invalid address');
-}
-
 export function notUnlockedResponse() {
-  return errorResponse('Transaction failed\n\nYou must unlock your wallet with `/unlock` in order to send transcations');
+  return errorResponse('Transaction failed.\n\nYou must unlock your wallet with `/unlock` in order to send transcations.');
 }
 
 export function transactionFailedResponse() {
