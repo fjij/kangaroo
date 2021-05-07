@@ -1,3 +1,5 @@
+import config from '../config/index.js';
+
 export function messageResponse(content) {
   return {
     type: 4,
@@ -56,7 +58,7 @@ export function withdrawHelpResponse() {
       `How to withdraw tokens`,
       'Example: `/withdraw 15 DAI 0x1AF42fEbCd301322f70C6362594f6b686B2815A8` to preview transaction',
       'Example: `/withdraw 15 DAI 0x1AF42fEbCd301322f70C6362594f6b686B2815A8 confirm` to send transaction',
-      'TODO: include zksync insert (do this on aesthetic update)',
+      `In order to access your funds, use the ${config.zkLink} network`,
     ].join('\n\n'),
   });
 }

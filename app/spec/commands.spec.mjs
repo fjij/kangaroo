@@ -603,7 +603,7 @@ describe('send/tip', () => {
   });
 });
 
-describe('withdraw', () => {
+fdescribe('withdraw', () => {
   const PRIVATE_KEY = process.env.TEST_PRIVATE_KEY;
 
   beforeAll(async () => {
@@ -716,7 +716,7 @@ describe('withdraw', () => {
       (await wallet.getTransferFee({ ticker: 'ETH' }, targetWallet.getAddress()))
         .getClosestPackable(),
       `/withdraw 0.2 ETH ${targetWallet.getAddress()} confirm`,
-      'TODO: include zksync insert (do this on aesthetic update)',
+      'In order to access your funds, use the [zkSync rinkeby](https://rinkeby.zksync.io/) network',
     ));
     await User.deleteMany({});
   });
@@ -760,7 +760,7 @@ describe('withdraw', () => {
       `Withdraw tokens to ${targetWallet.getAddress()}`,
       primaryAmount,
       feeAmount,
-      'TODO: include zksync insert (do this on aesthetic update)',
+      'In order to access your funds, use the [zkSync rinkeby](https://rinkeby.zksync.io/) network',
     ));
     expect(await targetWallet.getBalance({ ticker: 'DAI' }))
       .toEqual(Amount.fromStringValue({ ticker: 'DAI' }, '0.01').getClosestPackable());
