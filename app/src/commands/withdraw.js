@@ -14,6 +14,7 @@ import {
   transactionFailedResponse,
   notUnlockedResponse,
 } from '../responses/index.js';
+import config from '../config/index.js';
 import { Amount } from '../eth2/amount.js';
 
 export async function withdraw(interaction) {
@@ -63,7 +64,7 @@ export async function withdraw(interaction) {
         `Withdraw tokens to ${recipientAddress}`,
         primaryAmount.getClosestPackable(),
         feeAmount.getClosestPackable(),
-        'TODO: include zksync insert (do this on aesthetic update)',
+        `In order to access your funds, use the ${config.zkLink} network`,
       );
     } else {
       return await previewTransactionResponse(
@@ -71,7 +72,7 @@ export async function withdraw(interaction) {
         primaryAmount.getClosestPackable(),
         feeAmount.getClosestPackable(),
         `/withdraw ${amount} ${ticker} ${recipientAddress} confirm`,
-        'TODO: include zksync insert (do this on aesthetic update)',
+        `In order to access your funds, use the ${config.zkLink} network`,
       );
     }
   } else {
