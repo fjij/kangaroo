@@ -5,6 +5,12 @@ import {
   embedResponse,
   tokenNotFoundResponse,
   transactionFailedResponse,
+  transactionResponse,
+  previewTransactionResponse,
+  invalidAmountResponse,
+  sendHelpResponse,
+  missingOptionsResponse,
+  notUnlockedResponse,
 } from '../src/responses/index.js';
 import { connect } from '../src/db/index.js';
 import { User, getOrCreateWallet } from '../src/user/index.js';
@@ -14,6 +20,7 @@ import { Amount } from '../src/eth2/amount.js';
 import { Wallet } from '../src/eth2/wallet.js';
 import { listTokens } from '../src/commands/listTokens.js';
 import { unlock } from '../src/commands/unlock.js';
+import { send } from '../src/commands/send.js';
 import { getString } from '../src/strings/index.js';
 import { deposit } from '../src/commands/deposit.js';
 
@@ -445,5 +452,150 @@ In order to deposit connect your wallet to the [zkSync rinkeby](https://rinkeby.
 Then deposit to your Kangaroo wallet with your public key ${ pubKey }
 The transaction will take some time, you can use the /balance function to check if the transaction has finished.`
     }));
+  });
+});
+
+describe('send/tip', () => {
+  const PRIVATE_KEY = process.env.TEST_PRIVATE_KEY;
+
+  beforeAll(async () => {
+    if (!PRIVATE_KEY) {
+      throw new Error(
+        'You must provide an account in the TEST_PRIVATE_KEY environment variable'
+      );
+    }
+    await connect();
+    await eth2.init();
+    await (new Token({ ticker: 'ETH', name: 'Ethereum' })).save();
+    await (new Token({ ticker: 'DAI', name: 'Dai'})).save();
+  });
+
+  afterAll(async () => {
+    await Token.deleteMany({});
+    await User.deleteMany({});
+  });
+
+  it('should return information when no options', async () => {
+    const res = await send({
+      data: { name: 'send' },
+      user: { id: '1234' }
+    });
+    expect(res).toEqual(sendHelpResponse('send'));
+    await User.deleteMany({});
+  });
+
+  it('should fail if not enough options are provided', async () => {
+    const res = await send({
+      data: { name: 'send', options: [
+        { name: 'amount', value: '0.2' }
+      ] },
+      user: { id: '1234' }
+    });
+    expect(res).toEqual(missingOptionsResponse(['ticker', 'user']));
+    await User.deleteMany({});
+  });
+
+  it('should fail if an invalid ticker is provided', async () => {
+    const res = await send({
+      data: { name: 'send', options: [
+        { name: 'amount', value: '0.2' },
+        { name: 'ticker', value: 'FAKE' },
+        { name: 'user', value: '2345' },
+      ] },
+      user: { id: '1234' }
+    });
+    expect(res).toEqual(tokenNotFoundResponse());
+    await User.deleteMany({});
+  });
+
+  it('should fail for an invalid amount', async () => {
+    const res = await send({
+      data: { name: 'send', options: [
+        { name: 'amount', value: 'pizza' },
+        { name: 'ticker', value: 'ETH' },
+        { name: 'user', value: '2345' },
+      ] },
+      user: { id: '1234' }
+    });
+    expect(res).toEqual(invalidAmountResponse());
+    await User.deleteMany({});
+  });
+  
+  it('should fail for a negative amount', async () => {
+    const res = await send({
+      data: { name: 'send', options: [
+        { name: 'amount', value: '-1' },
+        { name: 'ticker', value: 'ETH' },
+        { name: 'user', value: '2345' },
+      ] },
+      user: { id: '1234' }
+    });
+    expect(res).toEqual(invalidAmountResponse());
+    await User.deleteMany({});
+  });
+
+  it('should preview a transaction', async () => {
+    const res = await send({
+      data: { name: 'send', options: [
+        { name: 'amount', value: '0.2' },
+        { name: 'ticker', value: 'ETH' },
+        { name: 'user', value: '2345' },
+      ] },
+      user: { id: '1234' }
+    });
+    const wallet = await getOrCreateWallet('1234');
+    const targetWallet = await getOrCreateWallet('2345');
+    expect(res).toEqual(await previewTransactionResponse(
+      'Transfer tokens',
+      Amount.fromStringValue({ ticker: 'ETH' }, '0.2').getClosestPackable(),
+      (await wallet.getTransferFee({ ticker: 'ETH' }, targetWallet.getAddress()))
+        .getClosestPackable(),
+      '/send 0.2 ETH @<insert user> confirm'
+    ));
+    await User.deleteMany({});
+  });
+
+  it('should fail if wallet is not unlocked', async () => {
+    const res = await send({
+      data: { name: 'send', options: [
+        { name: 'amount', value: '0.01' },
+        { name: 'ticker', value: 'DAI' },
+        { name: 'user', value: '2345' },
+        { name: 'confirm', value: 'confirm' },
+      ] },
+      user: { id: '1234' }
+    });
+    expect(res).toEqual(notUnlockedResponse());
+    await User.deleteMany({});
+  });
+
+  it('should send a transaction with confirm', async () => {
+    await new User({ userId: '1234', privateKey: PRIVATE_KEY}).save();
+    await new Promise(resolve => setTimeout(resolve, 100));
+    const wallet = await getOrCreateWallet('1234');
+    const targetWallet = await getOrCreateWallet('2345');
+    const primaryAmount = Amount.fromStringValue({ ticker: 'DAI' }, '0.01')
+      .getClosestPackable();
+    const feeAmount = (await wallet.getTransferFee(
+      { ticker: 'DAI' },
+      targetWallet.getAddress()
+    )).getClosestPackable();
+    const res = await send({
+      data: { name: 'send', options: [
+        { name: 'amount', value: '0.01' },
+        { name: 'ticker', value: 'DAI' },
+        { name: 'user', value: '2345' },
+        { name: 'confirm', value: 'confirm' },
+      ] },
+      user: { id: '1234' }
+    });
+    expect(res).toEqual(await transactionResponse(
+      'Transfer tokens',
+      primaryAmount,
+      feeAmount,
+    ));
+    expect(await targetWallet.getBalance({ ticker: 'DAI' }))
+      .toEqual(Amount.fromStringValue({ ticker: 'DAI' }, '0.01').getClosestPackable());
+    await User.deleteMany({});
   });
 });

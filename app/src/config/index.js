@@ -4,6 +4,9 @@ export default {
   interactEndpoint: process.env.INTERACTIONS_ENDPOINT || '/api/interactions',
   port: process.env.PORT || 3000,
   appPublicKey: process.env.APPLICATION_PUBLIC_KEY || '',
+  appId: process.env.APPLICATION_ID || '',
+  discordAuth: process.env.DISCORD_AUTHORIZATION || '',
+  discordBaseUrl: process.env.DISCORD_BASE_URL || 'https://discord.com/api/v8',
   chainName: process.env.CHAIN_NAME || 'rinkeby',
   zkLink: "[zkSync rinkeby](https://rinkeby.zksync.io/)",
 };
