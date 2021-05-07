@@ -25,6 +25,7 @@ import { unlock } from '../src/commands/unlock.js';
 import { send } from '../src/commands/send.js';
 import { withdraw } from '../src/commands/withdraw.js';
 import { getString } from '../src/strings/index.js';
+import { deposit } from '../src/commands/deposit.js';
 
 describe('help', () => {
   it('should respond with help text', () => {
@@ -423,6 +424,37 @@ describe('unlock', () => {
     });
     expect(res).toEqual(transactionFailedResponse());
     await User.deleteMany({});
+  });
+});
+
+describe('deposit', () => {
+
+  beforeAll(async () => {
+    await connect();
+    await eth2.init();
+  });
+
+  afterAll(async () => {
+    await User.deleteMany({});
+  });
+
+  it('should respond with deposit text', async () => {
+    const interaction = {
+      user: { id: '1234' }
+    };
+    const res = await deposit(interaction);
+    const wallet = await getOrCreateWallet('1234')
+    const pubKey = wallet.getAddress()
+
+    expect(res).toEqual(embedResponse({
+      title: 'Deposit',
+      "color": 15422875,
+      description: `Depositing allows you to store your tokens in your Kangaroo Wallet
+    
+In order to deposit connect your wallet to the [zkSync rinkeby](https://rinkeby.zksync.io/) network.
+Then deposit to your Kangaroo wallet with your public key ${ pubKey }
+The transaction will take some time, you can use the /balance function to check if the transaction has finished.`
+    }));
   });
 });
 
