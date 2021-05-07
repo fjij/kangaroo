@@ -1,0 +1,26 @@
+{
+  "name": "withdraw",
+  "description": "Withdraw tokens to an external wallet",
+  "options": [
+    {
+      "name": "amount",
+      "description": "Amount to send, in tokens (not dollars)",
+      "type": 3
+    },
+    {
+      "name": "ticker",
+      "description": "Token ticker symbol - Example: ETH for Ethereum",
+      "type": 3
+    },
+    {
+      "name": "address",
+      "description": "Address of the wallet to send to",
+      "type": 3
+    },
+    {
+      "name": "confirm",
+      "description": "Leave this blank to preview the transaction. Type confirm to confirm it.",
+      "type": 3
+    }
+  ]
+}
