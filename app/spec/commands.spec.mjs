@@ -96,17 +96,14 @@ describe('balance', () => {
         user: { id: '1234' }
       };
       const res = await balance(interaction);
-      const description = res.data.embeds[0].description;
+      const fields = res.data.embeds[0].fields;
       expect(res).toEqual(embedResponse({
         title: 'ETH Balance',
         color: 15422875,
-        description
+        fields
       }));
-      const [value, ticker, , price] = description.split(' ');
-      expect(value).toEqual(balanceETH);
-      expect(ticker).toEqual('ETH');
-      expect(price[0]).toEqual('$');
-      expect(parseFloat(price.slice(1))).toBeGreaterThan(0);
+      expect(fields[0].name).toEqual(`**${balanceETH} ETH**`);
+      expect(parseFloat(fields[0].value.slice(2, -1))).toBeGreaterThan(0);
     });
 
     it('should respond with a specific balance if ticker is provided case-insensitive', async () => {
@@ -115,43 +112,29 @@ describe('balance', () => {
         user: { id: '1234' }
       };
       const res = await balance(interaction);
-      const description = res.data.embeds[0].description;
+      const fields = res.data.embeds[0].fields;
       expect(res).toEqual(embedResponse({
         title: 'DAI Balance',
         color: 15422875,
-        description
+        fields,
       }));
-      const [value, ticker, , price] = description.split(' ');
-      expect(value).toEqual(balanceDAI);
-      expect(ticker).toEqual('DAI');
-      expect(price[0]).toEqual('$');
-      expect(parseFloat(price.slice(1))).toBeGreaterThan(0);
+      expect(fields[0].name).toEqual(`**${balanceDAI} DAI**`);
+      expect(parseFloat(fields[0].value.slice(2, -1))).toBeGreaterThan(0);
     });
 
     it('should respond with all balances if no options are provided', async () => {
       const interaction = { data: {}, user: { id: '1234' } };
       const res = await balance(interaction);
-      const description = res.data.embeds[0].description;
+      const fields = res.data.embeds[0].fields;
       expect(res).toEqual(embedResponse({
         title: 'All Balances',
         color: 15422875,
-        description
+        fields,
       }));
-      const [ETHscription, DAIscription] = description.split('\n');
-      {
-        const [value, ticker, , price] = ETHscription.split(' ');
-        expect(value).toEqual(balanceETH);
-        expect(ticker).toEqual('ETH');
-        expect(price[0]).toEqual('$');
-        expect(parseFloat(price.slice(1))).toBeGreaterThan(0);
-      }
-      {
-        const [value, ticker, , price] = DAIscription.split(' ');
-        expect(value).toEqual(balanceDAI);
-        expect(ticker).toEqual('DAI');
-        expect(price[0]).toEqual('$');
-        expect(parseFloat(price.slice(1))).toBeGreaterThan(0);
-      }
+      expect(fields[0].name).toEqual(`**${balanceETH} ETH**`);
+      expect(parseFloat(fields[0].value.slice(2, -1))).toBeGreaterThan(0);
+      expect(fields[1].name).toEqual(`**${balanceDAI} DAI**`);
+      expect(parseFloat(fields[1].value.slice(2, -1))).toBeGreaterThan(0);
     });
 
     it('should respond with an error message if an invalid ticker is provided', async () => {
@@ -198,16 +181,14 @@ describe('balance', () => {
         user: { id: '1234' }
       };
       const res = await balance(interaction);
-      const description = res.data.embeds[0].description;
+      const fields = res.data.embeds[0].fields;
       expect(res).toEqual(embedResponse({
         title: 'DAI Balance',
         color: 15422875,
-        description
+        fields,
       }));
-      const [value, ticker, , price] = description.split(' ');
-      expect(value).toEqual('0.0');
-      expect(ticker).toEqual('DAI');
-      expect(price).toEqual('$0.00');
+      expect(fields[0].name).toEqual(`**0.0 DAI**`);
+      expect(fields[0].value).toEqual('*$0.00*');
     });
   });
 });
@@ -300,7 +281,7 @@ describe('list all tokens', () => {
   it('should respond with all tokens', async () => {
     const res = await(listTokens)({ type: 2 });
     expect(res).toEqual(embedResponse({
-      title: 'All Supported Tokens📖',
+      title: 'All Supported Tokens',
       "color": 15422875,
       description: 'ETH | Ethereum\nDAI | Dai\nBAT | Basic Attention Token'
     }));

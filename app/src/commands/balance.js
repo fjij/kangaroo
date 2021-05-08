@@ -18,12 +18,17 @@ export async function balance(interaction) {
     }
 
     const balance = await wallet.getBalance(token);
-    const description = `${balance.toString()} - ${await balance.getPrice()}`;
+    const fields = [
+      {
+        name: `**${balance.toString()}**`,
+        value: `*${await balance.getPrice()}*`
+      }
+    ]
 
     return embedResponse({
       title,
       color: 15422875,
-      description
+      fields
     });
   } else {
     const title = 'All Balances';
@@ -33,17 +38,24 @@ export async function balance(interaction) {
       tokens.map(async token => await wallet.getBalance(token))
     )).filter(amount => amount.getValue().gt(0));
 
-    const amountStrings = (await Promise.all(
-      amounts.map(async a => `${a.toString()} - ${await a.getPrice()}`)
+    const fields = (await Promise.all(
+      amounts.map(async a => ({
+        name: `**${a.toString()}**`,
+        value: `*${await a.getPrice()}*`
+      }))
     ));
 
-    const description = (amountStrings.length > 0)?amountStrings.join('\n'):
-      'You don\'t have any tokens :(';
+    const additionalProperties = {};
+    if (fields.length > 0) {
+      additionalProperties.fields = fields;
+    } else {
+      additionalProperties.description = 'You don\'t have any tokens :(';
+    }
 
     return embedResponse({
       title,
       color: 15422875,
-      description
+      ...additionalProperties
     });
   }
 };
