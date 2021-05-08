@@ -9,7 +9,7 @@
     },
     {
       "name": "confirm",
-      "description": "Leave this blank to preview the transaction. Type confirm to confirm it.",
+      "description": "Leave this blank to preview the transaction. Type 'yes' to confirm it.",
       "type": 3
     }
   ]
