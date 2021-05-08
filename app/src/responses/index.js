@@ -92,6 +92,7 @@ export async function previewTransactionResponse(
   return embedResponse({
     title: 'Preview Transaction',
     color: 15422875,
+    fields,
     description: [
       description,
       'Use this command with `confirm: yes` to confirm this transaction.'
@@ -128,6 +129,7 @@ export async function transactionResponse(
   return embedResponse({
     title: 'Transaction Confirmed',
     color: 15422875,
+    fields,
     description
   });
 }
