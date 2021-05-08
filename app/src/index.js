@@ -6,6 +6,7 @@ import { handleInteraction } from './interactions/index.js';
 import { deferredResponse } from './responses/index.js';
 import { editInteractionResponse } from './discord/index.js';
 import config from './config/index.js';
+import Discord from 'discord.js';
 
 const app = express();
 
@@ -35,6 +36,10 @@ async function start() {
   registerApiRoute(app);
   await db.connect();
   await eth2.init();
+
+  const client = new Discord.Client();
+  client.login(config.botToken);
+
   app.listen(config.port, () => {
     console.log(`App listening at http://localhost:${config.port}`);
   });
