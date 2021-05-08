@@ -283,7 +283,20 @@ describe('list all tokens', () => {
     expect(res).toEqual(embedResponse({
       title: 'All Supported Tokens',
       "color": 15422875,
-      description: 'ETH | Ethereum\nDAI | Dai\nBAT | Basic Attention Token'
+      fields: [
+        {
+          name: '**ETH**',
+          value: '*Ethereum*'
+        },
+        {
+          name: '**DAI**',
+          value: '*Dai*'
+        },
+        {
+          name: '**BAT**',
+          value: '*Basic Attention Token*'
+        }
+      ]
     }));
   });
 });
