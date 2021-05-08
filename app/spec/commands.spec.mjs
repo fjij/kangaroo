@@ -363,15 +363,11 @@ describe('unlock', () => {
     const wallet = await getOrCreateWallet('1234');
     const fee = (await wallet.getUnlockFee({ ticker: 'DAI' }))
       .getClosestPackable();
-    expect(res).toEqual(embedResponse({
-      title: 'Unlock with DAI',
-      color: 15422875,
-      description: [
-        'Unlock your wallet using DAI?',
-        `${fee.toString()} - ${await fee.getPrice()}`,
-        'Do `/unlock DAI confirm` to confirm the transaction.',
-      ].join('\n\n')
-    }));
+    expect(res).toEqual(await previewTransactionResponse(
+      `Unlock your wallet using DAI`,
+      null, 
+      fee.getClosestPackable()
+    ));
     await User.deleteMany({});
   });
 
@@ -393,7 +389,7 @@ describe('unlock', () => {
     const res = await unlock({
       data: { options: [
         { name: 'ticker', value: 'DAI' },
-        { name: 'confirm', value: 'confirm' }
+        { name: 'confirm', value: 'yes' }
       ] },
       user: { id: '1234' }
     });
@@ -412,7 +408,7 @@ describe('unlock', () => {
     const res = await unlock({
       data: { options: [
         { name: 'ticker', value: 'ETH' },
-        { name: 'confirm', value: 'confirm' }
+        { name: 'confirm', value: 'yes' }
       ] },
       user: { id: '1234' }
     });
@@ -543,11 +539,10 @@ describe('send/tip', () => {
     const wallet = await getOrCreateWallet('1234');
     const targetWallet = await getOrCreateWallet('2345');
     expect(res).toEqual(await previewTransactionResponse(
-      'Transfer tokens',
+      'Send tokens to <@2345>',
       Amount.fromStringValue({ ticker: 'ETH' }, '0.2').getClosestPackable(),
       (await wallet.getTransferFee({ ticker: 'ETH' }, targetWallet.getAddress()))
         .getClosestPackable(),
-      '/send 0.2 ETH @<insert user> confirm'
     ));
     await User.deleteMany({});
   });
@@ -558,7 +553,7 @@ describe('send/tip', () => {
         { name: 'amount', value: '0.01' },
         { name: 'ticker', value: 'DAI' },
         { name: 'user', value: '2345' },
-        { name: 'confirm', value: 'confirm' },
+        { name: 'confirm', value: 'yes' },
       ] },
       user: { id: '1234' }
     });
@@ -582,12 +577,12 @@ describe('send/tip', () => {
         { name: 'amount', value: '0.01' },
         { name: 'ticker', value: 'DAI' },
         { name: 'user', value: '2345' },
-        { name: 'confirm', value: 'confirm' },
+        { name: 'confirm', value: 'yes' },
       ] },
       user: { id: '1234' }
     });
     expect(res).toEqual(await transactionResponse(
-      'Transfer tokens',
+      'Send tokens to <@2345>',
       primaryAmount,
       feeAmount,
     ));
@@ -705,12 +700,10 @@ describe('withdraw', () => {
       user: { id: '1234' }
     });
     expect(res).toEqual(await previewTransactionResponse(
-      `Withdraw tokens to ${targetWallet.getAddress()}`,
+      `Withdraw tokens to \`\`\`${targetWallet.getAddress()}\`\`\`In order to access your funds, use the [zkSync rinkeby](https://rinkeby.zksync.io/) network`,
       Amount.fromStringValue({ ticker: 'ETH' }, '0.2').getClosestPackable(),
       (await wallet.getTransferFee({ ticker: 'ETH' }, targetWallet.getAddress()))
         .getClosestPackable(),
-      `/withdraw 0.2 ETH ${targetWallet.getAddress()} confirm`,
-      'In order to access your funds, use the [zkSync rinkeby](https://rinkeby.zksync.io/) network',
     ));
     await User.deleteMany({});
   });
@@ -722,7 +715,7 @@ describe('withdraw', () => {
         { name: 'amount', value: '0.01' },
         { name: 'ticker', value: 'DAI' },
         { name: 'address', value: targetWallet.getAddress() },
-        { name: 'confirm', value: 'confirm' },
+        { name: 'confirm', value: 'yes' },
       ] },
       user: { id: '1234' }
     });
@@ -746,15 +739,14 @@ describe('withdraw', () => {
         { name: 'amount', value: '0.01' },
         { name: 'ticker', value: 'DAI' },
         { name: 'address', value: targetWallet.getAddress() },
-        { name: 'confirm', value: 'confirm' },
+        { name: 'confirm', value: 'yes' },
       ] },
       user: { id: '1234' }
     });
     expect(res).toEqual(await transactionResponse(
-      `Withdraw tokens to ${targetWallet.getAddress()}`,
+      `Withdraw tokens to \`\`\`${targetWallet.getAddress()}\`\`\`In order to access your funds, use the [zkSync rinkeby](https://rinkeby.zksync.io/) network`,
       primaryAmount,
       feeAmount,
-      'In order to access your funds, use the [zkSync rinkeby](https://rinkeby.zksync.io/) network',
     ));
     expect(await targetWallet.getBalance({ ticker: 'DAI' }))
       .toEqual(Amount.fromStringValue({ ticker: 'DAI' }, '0.01').getClosestPackable());
