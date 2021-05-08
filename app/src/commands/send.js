@@ -43,7 +43,7 @@ export async function send(interaction) {
     const userWallet = await getOrCreateWallet(userId);
     const recipientWallet = await getOrCreateWallet(recipientId);
     const feeAmount = await userWallet.getTransferFee(token, recipientWallet.getAddress());
-    if (confirm === 'CONFIRM') {
+    if (confirm === 'YES') {
       if (!await userWallet.getUnlocked()) {
         return notUnlockedResponse();
       }
@@ -58,21 +58,15 @@ export async function send(interaction) {
         return transactionFailedResponse();
       }
       return await transactionResponse(
-        'Transfer tokens',
+        `Send tokens to <@${recipientId}>`,
         primaryAmount.getClosestPackable(),
         feeAmount.getClosestPackable(),
       );
     } else {
-      let userText = '@<insert user>';
-      if (config.discordAuth !== '') {
-        const recipientUser = await getUserById(recipientId);
-        userText = `@${recipientUser.username}#${recipientUser.discriminator}`;
-      }
       return await previewTransactionResponse(
-        'Transfer tokens',
+        `Send tokens to <@${recipientId}>`,
         primaryAmount.getClosestPackable(),
         feeAmount.getClosestPackable(),
-        `/${sendOrTip} ${amount} ${ticker} ${userText} confirm`
       );
     }
   } else {

@@ -46,7 +46,7 @@ export async function withdraw(interaction) {
     }
     const userWallet = await getOrCreateWallet(userId);
     const feeAmount = await userWallet.getTransferFee(token, recipientAddress);
-    if (confirm === 'CONFIRM') {
+    if (confirm === 'YES') {
       if (!await userWallet.getUnlocked()) {
         return notUnlockedResponse();
       }
@@ -61,18 +61,15 @@ export async function withdraw(interaction) {
         return transactionFailedResponse();
       }
       return await transactionResponse(
-        `Withdraw tokens to ${recipientAddress}`,
+        `Withdraw tokens to \`\`\`${recipientAddress}\`\`\`In order to access your funds, use the ${ config.zkLink } network`,
         primaryAmount.getClosestPackable(),
         feeAmount.getClosestPackable(),
-        `In order to access your funds, use the ${config.zkLink} network`,
       );
     } else {
       return await previewTransactionResponse(
-        `Withdraw tokens to ${recipientAddress}`,
+        `Withdraw tokens to \`\`\`${recipientAddress}\`\`\`In order to access your funds, use the ${ config.zkLink } network`,
         primaryAmount.getClosestPackable(),
         feeAmount.getClosestPackable(),
-        `/withdraw ${amount} ${ticker} ${recipientAddress} confirm`,
-        `In order to access your funds, use the ${config.zkLink} network`,
       );
     }
   } else {

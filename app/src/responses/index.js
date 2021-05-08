@@ -66,60 +66,69 @@ export function withdrawHelpResponse() {
 export async function previewTransactionResponse(
   description,
   primaryAmount,
-  feeAmount,
-  confirmCommand,
-  extraInfo = null,
+  feeAmount
 ) {
-  const texts = [];
-  texts.push(description);
+  const fields = [];
   if (primaryAmount) {
-    texts.push(`${primaryAmount.toString()} - ${await primaryAmount.getPrice()}`);
+    fields.push({
+      name: 'Amount',
+      value: `**${primaryAmount.toString()}** - *${await primaryAmount.getPrice()}*`
+    });
   }
   if (feeAmount) {
-    texts.push(`Fee:\n${feeAmount.toString()} - ${await feeAmount.getPrice()}`);
+    fields.push({
+      name: 'Amount',
+      value: `**${feeAmount.toString()}** - *${await feeAmount.getPrice()}*`
+    });
   }
   if (primaryAmount && feeAmount) {
     const total = primaryAmount.add(feeAmount);
-    texts.push(`Total:\n${total.toString()} - ${await total.getPrice()}`);
-  }
-  texts.push(`\`${confirmCommand}\` to confirm transaction`);
-  if (extraInfo) {
-    texts.push(extraInfo);
+    fields.push({
+      name: 'Total',
+      value: `**${total.toString()}** - *${await total.getPrice()}*`
+    });
   }
 
   return embedResponse({
     title: 'Preview Transaction',
     color: 15422875,
-    description: texts.join('\n\n'),
+    description: [
+      description,
+      'Use this command with `confirm: yes` to confirm this transaction.'
+    ].join('\n\n')
   });
 }
 
 export async function transactionResponse(
   description,
   primaryAmount,
-  feeAmount,
-  extraInfo = null,
+  feeAmount
 ) {
-  const texts = [];
-  texts.push(description);
+  const fields = [];
   if (primaryAmount) {
-    texts.push(`${primaryAmount.toString()} - ${await primaryAmount.getPrice()}`);
+    fields.push({
+      name: 'Amount',
+      value: `**${primaryAmount.toString()}** - *${await primaryAmount.getPrice()}*`
+    });
   }
   if (feeAmount) {
-    texts.push(`Fee:\n${feeAmount.toString()} - ${await feeAmount.getPrice()}`);
+    fields.push({
+      name: 'Amount',
+      value: `**${feeAmount.toString()}** - *${await feeAmount.getPrice()}*`
+    });
   }
   if (primaryAmount && feeAmount) {
     const total = primaryAmount.add(feeAmount);
-    texts.push(`Total:\n${total.toString()} - ${await total.getPrice()}`);
-  }
-  if (extraInfo) {
-    texts.push(extraInfo);
+    fields.push({
+      name: 'Total',
+      value: `**${total.toString()}** - *${await total.getPrice()}*`
+    });
   }
 
   return embedResponse({
-    title: 'Transaction Sent',
+    title: 'Transaction Confirmed',
     color: 15422875,
-    description: texts.join('\n\n'),
+    description
   });
 }
 

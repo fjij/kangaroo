@@ -7,11 +7,11 @@ export async function deposit(interaction) {
     const wallet = await getOrCreateWallet(getUserId(interaction))
     const pubKey = wallet.getAddress()
 
-    const description = `Depositing allows you to store your tokens in your Kangaroo Wallet
+    const description = `Depositing allows you to store your tokens in your Kangaroo Wallet.
     
-In order to deposit connect your wallet to the ${ config.zkLink } network.
-Then deposit to your Kangaroo wallet with your public key ${ pubKey }
-The transaction will take some time, you can use the /balance function to check if the transaction has finished.`
+In order to deposit, connect your wallet to the ${ config.zkLink } network.
+
+Then, deposit to your Kangaroo wallet with your public key:\`\`\`${ pubKey }\`\`\`The transaction will take some time, you can use the /balance function to check if the transaction has finished.`
  
     return embedResponse({
      title: 'Deposit',

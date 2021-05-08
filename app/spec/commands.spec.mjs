@@ -96,17 +96,14 @@ describe('balance', () => {
         user: { id: '1234' }
       };
       const res = await balance(interaction);
-      const description = res.data.embeds[0].description;
+      const fields = res.data.embeds[0].fields;
       expect(res).toEqual(embedResponse({
         title: 'ETH Balance',
         color: 15422875,
-        description
+        fields
       }));
-      const [value, ticker, , price] = description.split(' ');
-      expect(value).toEqual(balanceETH);
-      expect(ticker).toEqual('ETH');
-      expect(price[0]).toEqual('$');
-      expect(parseFloat(price.slice(1))).toBeGreaterThan(0);
+      expect(fields[0].name).toEqual(`**${balanceETH} ETH**`);
+      expect(parseFloat(fields[0].value.slice(2, -1))).toBeGreaterThan(0);
     });
 
     it('should respond with a specific balance if ticker is provided case-insensitive', async () => {
@@ -115,43 +112,29 @@ describe('balance', () => {
         user: { id: '1234' }
       };
       const res = await balance(interaction);
-      const description = res.data.embeds[0].description;
+      const fields = res.data.embeds[0].fields;
       expect(res).toEqual(embedResponse({
         title: 'DAI Balance',
         color: 15422875,
-        description
+        fields,
       }));
-      const [value, ticker, , price] = description.split(' ');
-      expect(value).toEqual(balanceDAI);
-      expect(ticker).toEqual('DAI');
-      expect(price[0]).toEqual('$');
-      expect(parseFloat(price.slice(1))).toBeGreaterThan(0);
+      expect(fields[0].name).toEqual(`**${balanceDAI} DAI**`);
+      expect(parseFloat(fields[0].value.slice(2, -1))).toBeGreaterThan(0);
     });
 
     it('should respond with all balances if no options are provided', async () => {
       const interaction = { data: {}, user: { id: '1234' } };
       const res = await balance(interaction);
-      const description = res.data.embeds[0].description;
+      const fields = res.data.embeds[0].fields;
       expect(res).toEqual(embedResponse({
         title: 'All Balances',
         color: 15422875,
-        description
+        fields,
       }));
-      const [ETHscription, DAIscription] = description.split('\n');
-      {
-        const [value, ticker, , price] = ETHscription.split(' ');
-        expect(value).toEqual(balanceETH);
-        expect(ticker).toEqual('ETH');
-        expect(price[0]).toEqual('$');
-        expect(parseFloat(price.slice(1))).toBeGreaterThan(0);
-      }
-      {
-        const [value, ticker, , price] = DAIscription.split(' ');
-        expect(value).toEqual(balanceDAI);
-        expect(ticker).toEqual('DAI');
-        expect(price[0]).toEqual('$');
-        expect(parseFloat(price.slice(1))).toBeGreaterThan(0);
-      }
+      expect(fields[0].name).toEqual(`**${balanceETH} ETH**`);
+      expect(parseFloat(fields[0].value.slice(2, -1))).toBeGreaterThan(0);
+      expect(fields[1].name).toEqual(`**${balanceDAI} DAI**`);
+      expect(parseFloat(fields[1].value.slice(2, -1))).toBeGreaterThan(0);
     });
 
     it('should respond with an error message if an invalid ticker is provided', async () => {
@@ -198,16 +181,14 @@ describe('balance', () => {
         user: { id: '1234' }
       };
       const res = await balance(interaction);
-      const description = res.data.embeds[0].description;
+      const fields = res.data.embeds[0].fields;
       expect(res).toEqual(embedResponse({
         title: 'DAI Balance',
         color: 15422875,
-        description
+        fields,
       }));
-      const [value, ticker, , price] = description.split(' ');
-      expect(value).toEqual('0.0');
-      expect(ticker).toEqual('DAI');
-      expect(price).toEqual('$0.00');
+      expect(fields[0].name).toEqual(`**0.0 DAI**`);
+      expect(fields[0].value).toEqual('*$0.00*');
     });
   });
 });
@@ -300,9 +281,22 @@ describe('list all tokens', () => {
   it('should respond with all tokens', async () => {
     const res = await(listTokens)({ type: 2 });
     expect(res).toEqual(embedResponse({
-      title: 'All Supported Tokens📖',
+      title: 'All Supported Tokens',
       "color": 15422875,
-      description: 'ETH | Ethereum\nDAI | Dai\nBAT | Basic Attention Token'
+      fields: [
+        {
+          name: '**ETH**',
+          value: '*Ethereum*'
+        },
+        {
+          name: '**DAI**',
+          value: '*Dai*'
+        },
+        {
+          name: '**BAT**',
+          value: '*Basic Attention Token*'
+        }
+      ]
     }));
   });
 });
@@ -369,15 +363,11 @@ describe('unlock', () => {
     const wallet = await getOrCreateWallet('1234');
     const fee = (await wallet.getUnlockFee({ ticker: 'DAI' }))
       .getClosestPackable();
-    expect(res).toEqual(embedResponse({
-      title: 'Unlock with DAI',
-      color: 15422875,
-      description: [
-        'Unlock your wallet using DAI?',
-        `${fee.toString()} - ${await fee.getPrice()}`,
-        'Do `/unlock DAI confirm` to confirm the transaction.',
-      ].join('\n\n')
-    }));
+    expect(res).toEqual(await previewTransactionResponse(
+      `Unlock your wallet using DAI`,
+      null, 
+      fee.getClosestPackable()
+    ));
     await User.deleteMany({});
   });
 
@@ -399,7 +389,7 @@ describe('unlock', () => {
     const res = await unlock({
       data: { options: [
         { name: 'ticker', value: 'DAI' },
-        { name: 'confirm', value: 'confirm' }
+        { name: 'confirm', value: 'yes' }
       ] },
       user: { id: '1234' }
     });
@@ -418,7 +408,7 @@ describe('unlock', () => {
     const res = await unlock({
       data: { options: [
         { name: 'ticker', value: 'ETH' },
-        { name: 'confirm', value: 'confirm' }
+        { name: 'confirm', value: 'yes' }
       ] },
       user: { id: '1234' }
     });
@@ -449,11 +439,11 @@ describe('deposit', () => {
     expect(res).toEqual(embedResponse({
       title: 'Deposit',
       "color": 15422875,
-      description: `Depositing allows you to store your tokens in your Kangaroo Wallet
+      description: `Depositing allows you to store your tokens in your Kangaroo Wallet.
     
-In order to deposit connect your wallet to the [zkSync rinkeby](https://rinkeby.zksync.io/) network.
-Then deposit to your Kangaroo wallet with your public key ${ pubKey }
-The transaction will take some time, you can use the /balance function to check if the transaction has finished.`
+In order to deposit, connect your wallet to the [zkSync rinkeby](https://rinkeby.zksync.io/) network.
+
+Then, deposit to your Kangaroo wallet with your public key:\`\`\`${ pubKey }\`\`\`The transaction will take some time, you can use the /balance function to check if the transaction has finished.`
     }));
   });
 });
@@ -549,11 +539,10 @@ describe('send/tip', () => {
     const wallet = await getOrCreateWallet('1234');
     const targetWallet = await getOrCreateWallet('2345');
     expect(res).toEqual(await previewTransactionResponse(
-      'Transfer tokens',
+      'Send tokens to <@2345>',
       Amount.fromStringValue({ ticker: 'ETH' }, '0.2').getClosestPackable(),
       (await wallet.getTransferFee({ ticker: 'ETH' }, targetWallet.getAddress()))
         .getClosestPackable(),
-      '/send 0.2 ETH @<insert user> confirm'
     ));
     await User.deleteMany({});
   });
@@ -564,7 +553,7 @@ describe('send/tip', () => {
         { name: 'amount', value: '0.01' },
         { name: 'ticker', value: 'DAI' },
         { name: 'user', value: '2345' },
-        { name: 'confirm', value: 'confirm' },
+        { name: 'confirm', value: 'yes' },
       ] },
       user: { id: '1234' }
     });
@@ -588,12 +577,12 @@ describe('send/tip', () => {
         { name: 'amount', value: '0.01' },
         { name: 'ticker', value: 'DAI' },
         { name: 'user', value: '2345' },
-        { name: 'confirm', value: 'confirm' },
+        { name: 'confirm', value: 'yes' },
       ] },
       user: { id: '1234' }
     });
     expect(res).toEqual(await transactionResponse(
-      'Transfer tokens',
+      'Send tokens to <@2345>',
       primaryAmount,
       feeAmount,
     ));
@@ -711,12 +700,10 @@ describe('withdraw', () => {
       user: { id: '1234' }
     });
     expect(res).toEqual(await previewTransactionResponse(
-      `Withdraw tokens to ${targetWallet.getAddress()}`,
+      `Withdraw tokens to \`\`\`${targetWallet.getAddress()}\`\`\`In order to access your funds, use the [zkSync rinkeby](https://rinkeby.zksync.io/) network`,
       Amount.fromStringValue({ ticker: 'ETH' }, '0.2').getClosestPackable(),
       (await wallet.getTransferFee({ ticker: 'ETH' }, targetWallet.getAddress()))
         .getClosestPackable(),
-      `/withdraw 0.2 ETH ${targetWallet.getAddress()} confirm`,
-      'In order to access your funds, use the [zkSync rinkeby](https://rinkeby.zksync.io/) network',
     ));
     await User.deleteMany({});
   });
@@ -728,7 +715,7 @@ describe('withdraw', () => {
         { name: 'amount', value: '0.01' },
         { name: 'ticker', value: 'DAI' },
         { name: 'address', value: targetWallet.getAddress() },
-        { name: 'confirm', value: 'confirm' },
+        { name: 'confirm', value: 'yes' },
       ] },
       user: { id: '1234' }
     });
@@ -752,15 +739,14 @@ describe('withdraw', () => {
         { name: 'amount', value: '0.01' },
         { name: 'ticker', value: 'DAI' },
         { name: 'address', value: targetWallet.getAddress() },
-        { name: 'confirm', value: 'confirm' },
+        { name: 'confirm', value: 'yes' },
       ] },
       user: { id: '1234' }
     });
     expect(res).toEqual(await transactionResponse(
-      `Withdraw tokens to ${targetWallet.getAddress()}`,
+      `Withdraw tokens to \`\`\`${targetWallet.getAddress()}\`\`\`In order to access your funds, use the [zkSync rinkeby](https://rinkeby.zksync.io/) network`,
       primaryAmount,
       feeAmount,
-      'In order to access your funds, use the [zkSync rinkeby](https://rinkeby.zksync.io/) network',
     ));
     expect(await targetWallet.getBalance({ ticker: 'DAI' }))
       .toEqual(Amount.fromStringValue({ ticker: 'DAI' }, '0.01').getClosestPackable());

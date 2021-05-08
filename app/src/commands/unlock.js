@@ -1,4 +1,8 @@
-import { embedResponse, transactionFailedResponse } from '../responses/index.js';
+import {
+  previewTransactionResponse,
+  transactionFailedResponse,
+  embedResponse,
+} from '../responses/index.js';
 import { getOption } from './index.js';
 import { getUserId } from '../interactions/index.js';
 import { getOrCreateWallet } from '../user/index.js';
@@ -41,7 +45,7 @@ export async function unlock(interaction) {
 
   const confirm = getOption(interaction, 'confirm')?.toUpperCase();
 
-  if (confirm === 'CONFIRM') {
+  if (confirm === 'YES') {
     try {
       await wallet.unlock(token);
       return embedResponse({
@@ -53,15 +57,10 @@ export async function unlock(interaction) {
       return transactionFailedResponse();
     }
   } else {
-    const questionMsg = `Unlock your wallet using ${token.ticker}?`;
-    const feeAmount = (await wallet.getUnlockFee(token)).getClosestPackable();
-    const feeMsg = `${feeAmount.toString()} - ${await feeAmount.getPrice()}`;
-    const confirmMsg = 'Do `/unlock ' + token.ticker
-      + ' confirm` to confirm the transaction.';
-    return embedResponse({
-      title: `Unlock with ${token.ticker}`,
-      color: 15422875,
-      description: [ questionMsg, feeMsg, confirmMsg ].join('\n\n'),
-    });
+    return await previewTransactionResponse(
+      `Unlock your wallet using ${token.ticker}`,
+      null, 
+      (await wallet.getUnlockFee(token)).getClosestPackable()
+    );
   }
 }

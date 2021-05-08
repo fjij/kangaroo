@@ -5,21 +5,24 @@
     {
       "name": "amount",
       "description": "Amount to send, in tokens (not dollars)",
-      "type": 3
+      "type": 3,
+      "required": true
     },
     {
       "name": "ticker",
       "description": "Token ticker symbol - Example: ETH for Ethereum",
-      "type": 3
+      "type": 3,
+      "required": true
     },
     {
       "name": "address",
       "description": "Address of the wallet to send to",
-      "type": 3
+      "type": 3,
+      "required": true
     },
     {
       "name": "confirm",
-      "description": "Leave this blank to preview the transaction. Type confirm to confirm it.",
+      "description": "Leave this blank to preview the transaction. Type 'yes' to confirm it.",
       "type": 3
     }
   ]
