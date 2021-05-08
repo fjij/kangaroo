@@ -430,11 +430,11 @@ describe('deposit', () => {
     expect(res).toEqual(embedResponse({
       title: 'Deposit',
       "color": 15422875,
-      description: `Depositing allows you to store your tokens in your Kangaroo Wallet
+      description: `Depositing allows you to store your tokens in your Kangaroo Wallet.
     
-In order to deposit connect your wallet to the [zkSync rinkeby](https://rinkeby.zksync.io/) network.
-Then deposit to your Kangaroo wallet with your public key ${ pubKey }
-The transaction will take some time, you can use the /balance function to check if the transaction has finished.`
+In order to deposit, connect your wallet to the [zkSync rinkeby](https://rinkeby.zksync.io/) network.
+
+Then, deposit to your Kangaroo wallet with your public key:\`\`\`${ pubKey }\`\`\`The transaction will take some time, you can use the /balance function to check if the transaction has finished.`
     }));
   });
 });
