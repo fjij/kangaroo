@@ -1,11 +1,12 @@
 {
   "name": "unlock",
-  "description": "Unlock your wallet for so it can be used for transactions",
+  "description": "Pay a small fee to unlock your wallet for so it can be used for transactions",
   "options": [
     {
       "name": "ticker",
-      "description": "Token ticker symbol - Example: ETH for Ethereum",
-      "type": 3
+      "description": "Token ticker symbol to pay with - Example: ETH for Ethereum",
+      "type": 3,
+      "required": true
     },
     {
       "name": "confirm",
