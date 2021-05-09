@@ -92,7 +92,7 @@ describe('balance', () => {
 
     it('should respond with a specific balance if ticker is provided', async () => {
       const interaction = {
-        data: { options: [ { name: 'ticker', value: 'ETH' } ] },
+        data: { options: [ { name: 'token', value: 'ETH' } ] },
         user: { id: '1234' }
       };
       const res = await balance(interaction);
@@ -108,7 +108,7 @@ describe('balance', () => {
 
     it('should respond with a specific balance if ticker is provided case-insensitive', async () => {
       const interaction = {
-        data: { options: [ { name: 'ticker', value: 'dai' } ] },
+        data: { options: [ { name: 'token', value: 'dai' } ] },
         user: { id: '1234' }
       };
       const res = await balance(interaction);
@@ -139,7 +139,7 @@ describe('balance', () => {
 
     it('should respond with an error message if an invalid ticker is provided', async () => {
       const interaction = {
-        data: { options: [ { name: 'ticker', value: 'DOGE' } ] },
+        data: { options: [ { name: 'token', value: 'DOGE' } ] },
         user: { id: '1234' }
       };
       const res = await balance(interaction);
@@ -173,7 +173,7 @@ describe('balance', () => {
         data: {
           options: [
             {
-              name: 'ticker',
+              name: 'token',
               value: 'DAI'
             }
           ]
@@ -356,7 +356,7 @@ describe('unlock', () => {
 
   it('should transaction preview when only ticker is provided', async () => {
     const res = await unlock({
-      data: { options: [ { name: 'ticker', value: 'DAI' } ] },
+      data: { options: [ { name: 'token', value: 'DAI' } ] },
       user: { id: '1234' }
     });
     await new Promise(resolve => setTimeout(resolve, 100));
@@ -388,7 +388,7 @@ describe('unlock', () => {
 
     const res = await unlock({
       data: { options: [
-        { name: 'ticker', value: 'DAI' },
+        { name: 'token', value: 'DAI' },
         { name: 'confirm', value: 'yes' }
       ] },
       user: { id: '1234' }
@@ -407,7 +407,7 @@ describe('unlock', () => {
   it('should fail if there isn\'t enought balance', async () => {
     const res = await unlock({
       data: { options: [
-        { name: 'ticker', value: 'ETH' },
+        { name: 'token', value: 'ETH' },
         { name: 'confirm', value: 'yes' }
       ] },
       user: { id: '1234' }
@@ -492,7 +492,7 @@ describe('send/tip', () => {
     const res = await send({
       data: { name: 'send', options: [
         { name: 'amount', value: '0.2' },
-        { name: 'ticker', value: 'FAKE' },
+        { name: 'token', value: 'FAKE' },
         { name: 'user', value: '2345' },
       ] },
       user: { id: '1234' }
@@ -505,7 +505,7 @@ describe('send/tip', () => {
     const res = await send({
       data: { name: 'send', options: [
         { name: 'amount', value: 'pizza' },
-        { name: 'ticker', value: 'ETH' },
+        { name: 'token', value: 'ETH' },
         { name: 'user', value: '2345' },
       ] },
       user: { id: '1234' }
@@ -518,7 +518,7 @@ describe('send/tip', () => {
     const res = await send({
       data: { name: 'send', options: [
         { name: 'amount', value: '-1' },
-        { name: 'ticker', value: 'ETH' },
+        { name: 'token', value: 'ETH' },
         { name: 'user', value: '2345' },
       ] },
       user: { id: '1234' }
@@ -531,7 +531,7 @@ describe('send/tip', () => {
     const res = await send({
       data: { name: 'send', options: [
         { name: 'amount', value: '0.2' },
-        { name: 'ticker', value: 'ETH' },
+        { name: 'token', value: 'ETH' },
         { name: 'user', value: '2345' },
       ] },
       user: { id: '1234' }
@@ -551,7 +551,7 @@ describe('send/tip', () => {
     const res = await send({
       data: { name: 'send', options: [
         { name: 'amount', value: '0.01' },
-        { name: 'ticker', value: 'DAI' },
+        { name: 'token', value: 'DAI' },
         { name: 'user', value: '2345' },
         { name: 'confirm', value: 'yes' },
       ] },
@@ -575,7 +575,7 @@ describe('send/tip', () => {
     const res = await send({
       data: { name: 'send', options: [
         { name: 'amount', value: '0.01' },
-        { name: 'ticker', value: 'DAI' },
+        { name: 'token', value: 'DAI' },
         { name: 'user', value: '2345' },
         { name: 'confirm', value: 'yes' },
       ] },
@@ -637,7 +637,7 @@ describe('withdraw', () => {
     const res = await withdraw({
       data: { options: [
         { name: 'amount', value: '0.2' },
-        { name: 'ticker', value: 'FAKE' },
+        { name: 'token', value: 'FAKE' },
         { name: 'address', value: targetWallet.getAddress() },
       ] },
       user: { id: '1234' }
@@ -650,7 +650,7 @@ describe('withdraw', () => {
     const res = await withdraw({
       data: { options: [
         { name: 'amount', value: '0.2' },
-        { name: 'ticker', value: 'ETH' },
+        { name: 'token', value: 'ETH' },
         { name: 'address', value: 'grapes' },
       ] },
       user: { id: '1234' }
@@ -664,7 +664,7 @@ describe('withdraw', () => {
     const res = await withdraw({
       data: { options: [
         { name: 'amount', value: 'pizza' },
-        { name: 'ticker', value: 'ETH' },
+        { name: 'token', value: 'ETH' },
         { name: 'address', value: targetWallet.getAddress() },
       ] },
       user: { id: '1234' }
@@ -678,7 +678,7 @@ describe('withdraw', () => {
     const res = await withdraw({
       data: { options: [
         { name: 'amount', value: '-1' },
-        { name: 'ticker', value: 'ETH' },
+        { name: 'token', value: 'ETH' },
         { name: 'address', value: targetWallet.getAddress() },
       ] },
       user: { id: '1234' }
@@ -694,7 +694,7 @@ describe('withdraw', () => {
     const res = await withdraw({
       data: { options: [
         { name: 'amount', value: '0.2' },
-        { name: 'ticker', value: 'ETH' },
+        { name: 'token', value: 'ETH' },
         { name: 'address', value: targetWallet.getAddress() },
       ] },
       user: { id: '1234' }
@@ -713,7 +713,7 @@ describe('withdraw', () => {
     const res = await withdraw({
       data: { options: [
         { name: 'amount', value: '0.01' },
-        { name: 'ticker', value: 'DAI' },
+        { name: 'token', value: 'DAI' },
         { name: 'address', value: targetWallet.getAddress() },
         { name: 'confirm', value: 'yes' },
       ] },
@@ -737,7 +737,7 @@ describe('withdraw', () => {
     const res = await withdraw({
       data: { options: [
         { name: 'amount', value: '0.01' },
-        { name: 'ticker', value: 'DAI' },
+        { name: 'token', value: 'DAI' },
         { name: 'address', value: targetWallet.getAddress() },
         { name: 'confirm', value: 'yes' },
       ] },

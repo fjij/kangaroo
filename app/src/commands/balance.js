@@ -6,7 +6,7 @@ import { getAllTokens, getTokenByTicker } from '../tokens/index.js';
 
 export async function balance(interaction) {
   const userId = getUserId(interaction);
-  const ticker = getOption(interaction, 'ticker')?.toUpperCase();
+  const ticker = getOption(interaction, 'token')?.toUpperCase();
   const wallet = await getOrCreateWallet(userId);
 
   if (ticker) {

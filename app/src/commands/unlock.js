@@ -11,7 +11,7 @@ import { getString } from '../strings/index.js';
 
 export async function unlock(interaction) {
   const userId = getUserId(interaction);
-  const ticker = getOption(interaction, 'ticker')?.toUpperCase();
+  const ticker = getOption(interaction, 'token')?.toUpperCase();
   const wallet = await getOrCreateWallet(userId);
   const isUnlocked = await wallet.getUnlocked();
 

@@ -3,8 +3,8 @@
   "description": "Displays token balances",
   "options": [
     {
-      "name": "ticker",
-      "description": "Token ticker symbol - Example: ETH for Ethereum",
+      "name": "token",
+      "description": "Token symbol - Example: ETH for Ethereum",
       "type": 3
     }
   ]

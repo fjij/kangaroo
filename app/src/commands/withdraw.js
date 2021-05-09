@@ -20,7 +20,7 @@ import { Amount } from '../eth2/amount.js';
 export async function withdraw(interaction) {
   const userId = getUserId(interaction);
   const amount = getOption(interaction, 'amount');
-  const ticker = getOption(interaction, 'ticker')?.toUpperCase();
+  const ticker = getOption(interaction, 'token')?.toUpperCase();
   const recipientAddress = getOption(interaction, 'address');
   const confirm = getOption(interaction, 'confirm')?.toUpperCase();
 
@@ -78,7 +78,7 @@ export async function withdraw(interaction) {
       missingOptions.push('amount');
     }
     if (!ticker) {
-      missingOptions.push('ticker');
+      missingOptions.push('token');
     }
     if (!recipientAddress) {
       missingOptions.push('address');

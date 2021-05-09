@@ -2,8 +2,6 @@ import { getOption } from './index.js';
 import { getUserId } from '../interactions/index.js';
 import { getOrCreateWallet } from '../user/index.js';
 import { getTokenByTicker } from '../tokens/index.js';
-import { getUserById } from '../discord/index.js';
-import config from '../config/index.js';
 import {
   missingOptionsResponse,
   sendHelpResponse,
@@ -19,7 +17,7 @@ import { Amount } from '../eth2/amount.js';
 export async function send(interaction) {
   const userId = getUserId(interaction);
   const amount = getOption(interaction, 'amount');
-  const ticker = getOption(interaction, 'ticker')?.toUpperCase();
+  const ticker = getOption(interaction, 'token')?.toUpperCase();
   const recipientId = getOption(interaction, 'user');
   const confirm = getOption(interaction, 'confirm')?.toUpperCase();
 
@@ -75,7 +73,7 @@ export async function send(interaction) {
       missingOptions.push('amount');
     }
     if (!ticker) {
-      missingOptions.push('ticker');
+      missingOptions.push('token');
     }
     if (!recipientId) {
       missingOptions.push('user');

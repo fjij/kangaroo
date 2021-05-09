@@ -77,7 +77,7 @@ export async function previewTransactionResponse(
   }
   if (feeAmount) {
     fields.push({
-      name: 'Amount',
+      name: 'Fee',
       value: `**${feeAmount.toString()}** - *${await feeAmount.getPrice()}*`
     });
   }
@@ -114,7 +114,7 @@ export async function transactionResponse(
   }
   if (feeAmount) {
     fields.push({
-      name: 'Amount',
+      name: 'Fee',
       value: `**${feeAmount.toString()}** - *${await feeAmount.getPrice()}*`
     });
   }
