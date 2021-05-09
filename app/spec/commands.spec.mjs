@@ -484,7 +484,7 @@ describe('send/tip', () => {
       ] },
       user: { id: '1234' }
     });
-    expect(res).toEqual(missingOptionsResponse(['ticker', 'user']));
+    expect(res).toEqual(missingOptionsResponse(['token', 'user']));
     await User.deleteMany({});
   });
 
@@ -628,7 +628,7 @@ describe('withdraw', () => {
       ] },
       user: { id: '1234' }
     });
-    expect(res).toEqual(missingOptionsResponse(['ticker', 'address']));
+    expect(res).toEqual(missingOptionsResponse(['token', 'address']));
     await User.deleteMany({});
   });
 
