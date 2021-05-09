@@ -582,7 +582,7 @@ describe('send/tip', () => {
       user: { id: '1234' }
     });
     expect(res).toEqual(await transactionResponse(
-      'Send tokens to <@2345>',
+      'Sent tokens to <@2345>',
       primaryAmount,
       feeAmount,
     ));
@@ -744,7 +744,7 @@ describe('withdraw', () => {
       user: { id: '1234' }
     });
     expect(res).toEqual(await transactionResponse(
-      `Withdraw tokens to \`\`\`${targetWallet.getAddress()}\`\`\`In order to access your funds, use the [zkSync rinkeby](https://rinkeby.zksync.io/) network`,
+      `Withdrew tokens to \`\`\`${targetWallet.getAddress()}\`\`\`In order to access your funds, use the [zkSync rinkeby](https://rinkeby.zksync.io/) network`,
       primaryAmount,
       feeAmount,
     ));

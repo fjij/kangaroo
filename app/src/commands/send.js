@@ -58,7 +58,7 @@ export async function send(interaction) {
         return transactionFailedResponse();
       }
       return await transactionResponse(
-        `Send tokens to <@${recipientId}>`,
+        `Sent tokens to <@${recipientId}>`,
         primaryAmount.getClosestPackable(),
         feeAmount.getClosestPackable(),
       );

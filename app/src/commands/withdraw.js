@@ -61,7 +61,7 @@ export async function withdraw(interaction) {
         return transactionFailedResponse();
       }
       return await transactionResponse(
-        `Withdraw tokens to \`\`\`${recipientAddress}\`\`\`In order to access your funds, use the ${ config.zkLink } network`,
+        `Withdrew tokens to \`\`\`${recipientAddress}\`\`\`In order to access your funds, use the ${ config.zkLink } network`,
         primaryAmount.getClosestPackable(),
         feeAmount.getClosestPackable(),
       );
