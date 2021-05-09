@@ -22,8 +22,19 @@
     },
     {
       "name": "confirm",
-      "description": "Leave this blank to preview the transaction. Type 'yes' to confirm it.",
-      "type": 3
+      "description": "'no' to preview the transaction. 'yes' to confirm it.",
+      "type": 3,
+      "required": true,
+      "choices": [
+        {
+          "name": "no",
+          "value": "no"
+        },
+        {
+          "name": "yes",
+          "value": "yes"
+        }
+      ]
     }
   ]
 }
