@@ -415,6 +415,17 @@ describe('unlock', () => {
     expect(res).toEqual(transactionFailedResponse());
     await User.deleteMany({});
   });
+
+  it('should fail if an invalid token is provided', async () => {
+    const res = await unlock({
+      data: { options: [
+        { name: 'token', value: 'FAKE' },
+      ] },
+      user: { id: '1234' }
+    });
+    expect(res).toEqual(tokenNotFoundResponse());
+    await User.deleteMany({});
+  });
 });
 
 describe('deposit', () => {

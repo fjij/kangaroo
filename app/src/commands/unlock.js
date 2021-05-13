@@ -1,6 +1,7 @@
 import {
   previewTransactionResponse,
   transactionFailedResponse,
+  tokenNotFoundResponse,
   embedResponse,
 } from '../responses/index.js';
 import { getOption } from './index.js';
