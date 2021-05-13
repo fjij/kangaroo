@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "update-commands": "node ./scripts/updateCommands.js"
+    "update-commands": "node ./scripts/updateCommands.js",
+    "update-commands-global": "node ./scripts/updateCommandsGlobal.js"
   },
   "author": "",
   "license": "ISC",

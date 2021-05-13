@@ -1,0 +1,51 @@
+name: Deploy to mainnet
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@master
+
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: '14.x'
+
+    - name: Start MongoDB
+      uses: supercharge/mongodb-github-action@1.3.0
+      with:
+        mongodb-version: '4.4'
+
+    - name: npm install, test
+      working-directory: ./app
+      env:
+        MONGO_URI: mongodb://localhost/kangaroo?retryWrites=true&w=majority
+        TEST_PRIVATE_KEY: ${{ secrets.TEST_PRIVATE_KEY }}
+      run: |
+        npm install
+        npm run test
+
+    - name: Update commands on Discord
+      working-directory: ./commands
+      env:
+        APP_ID: ${{ secrets.MAINNET_DISCORD_APP_ID }}
+        AUTHORIZATION: ${{ secrets.MAINNET_DISCORD_AUTHORIZATION }}
+      run: |
+        npm install
+        npm run update-commands-global
+
+    - name: Deploy to Azure
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: kangaroo-dev
+        slot-name: Production
+        publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C76A5CB3DBD248CFA0A71B6AA537C7DA }}
+        package: ./app
