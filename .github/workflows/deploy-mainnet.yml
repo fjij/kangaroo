@@ -45,7 +45,7 @@ jobs:
     - name: Deploy to Azure
       uses: azure/webapps-deploy@v2
       with:
-        app-name: kangaroo-dev
+        app-name: kangaroo-mainnet
         slot-name: Production
         publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C76A5CB3DBD248CFA0A71B6AA537C7DA }}
         package: ./app
