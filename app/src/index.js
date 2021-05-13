@@ -2,7 +2,7 @@ import express from 'express';
 import * as db from './db/index.js';
 import * as eth2 from './eth2/index.js';
 import { parser, security } from './middleware/index.js';
-import { handleInteraction } from './interactions/index.js';
+import { handleInteraction, InteractionType } from './interactions/index.js';
 import { deferredResponse } from './responses/index.js';
 import { editInteractionResponse } from './discord/index.js';
 import config from './config/index.js';
@@ -16,6 +16,12 @@ function registerApiRoute(app) {
   }
   app.post(config.interactEndpoint, async (req, res) => {
     const interaction = req.body;
+    // Bypass delay for ping type interaction
+    // TODO: clean this up a bit
+    if (interaction.type === InteractionType.Ping) {
+      res.send(await handleInteraction(interaction));
+      return;
+    }
     res.send(deferredResponse());
     try {
       const response = await handleInteraction(interaction);
