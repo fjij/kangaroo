@@ -1,6 +1,8 @@
 # Kangaroo Discord Bot 🦘
 Bringing the next generation of crypto to the masses.
 
+Powered by [zkSync](https://zksync.io/).
+
 ## What is it? 🤔
 Kangaroo is a crypto tipping bot built with Layer 2 onboarding in mind. It
 supports Ethereum and a range of ERC-20 tokens.
